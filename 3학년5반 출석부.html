@@ -1,0 +1,2893 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="cupcake">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>3학년 5반 출석부</title>
+
+  <!-- Mobile Web App & PWA Standalone Mode Tags -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="3-5 출석부">
+  <meta name="theme-color" content="#fcf8f2">
+
+  <!-- Mobile App Home Icon (SVG Data URI) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%2310b981'/%3E%3Cpath d='M30 25 h40 a5 5 0 0 1 5 5 v40 a5 5 0 0 1 -5 5 h-40 a5 5 0 0 1 -5 -5 v-40 a5 5 0 0 1 5 -5 z' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M42 46 l6 6 l14 -14' fill='none' stroke='%23fef08a' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%2310b981'/%3E%3Cpath d='M30 25 h40 a5 5 0 0 1 5 5 v40 a5 5 0 0 1 -5 5 h-40 a5 5 0 0 1 -5 -5 v-40 a5 5 0 0 1 5 -5 z' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M42 46 l6 6 l14 -14' fill='none' stroke='%23fef08a' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+  <!-- Embedded Web App Manifest for Standalone PWA Mode -->
+  <link rel="manifest" href='data:application/manifest+json,{"name":"3학년 5반 출석부","short_name":"3-5 출석부","start_url":".","display":"standalone","background_color":"#ffffff","theme_color":"#10b981","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=\x27http://www.w3.org/2000/svg\x27 viewBox=\x270 0 100 100\x27%3E%3Crect width=\x27100\x27 height=\x27100\x27 rx=\x2724\x27 fill=\x27%2310b981\x27/%3E%3Cpath d=\x27M30 25 h40 a5 5 0 0 1 5 5 v40 a5 5 0 0 1 -5 5 h-40 a5 5 0 0 1 -5 -5 v-40 a5 5 0 0 1 5 -5 z\x27 fill=\x27none\x27 stroke=\x27white\x27 stroke-width=\x276\x27 stroke-linecap=\x27round\x27 stroke-linejoin=\x27round\x27/%3E%3Cpath d=\x27M42 46 l6 6 l14 -14\x27 fill=\x27none\x27 stroke=\x27%23fef08a\x27 stroke-width=\x276\x27 stroke-linecap=\x27round\x27 stroke-linejoin=\x27round\x27/%3E%3C/svg%3E","sizes":"192x192 512x512","type":"image/svg+xml"}]}'>
+  
+  <!-- Pretendard Web Font -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  
+  <!-- Tailwind CSS & DaisyUI (cupcake theme) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- SheetJS (xlsx) for Excel Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    * {
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: max(env(safe-area-inset-bottom), 1.5rem);
+      overscroll-behavior-y: contain;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    input, textarea {
+      user-select: auto;
+      -webkit-user-select: auto;
+    }
+    .touch-btn {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* 출결 상태 전용 테마 색상 */
+    .status-attend {
+      background-color: #10b981 !important;
+      color: #ffffff !important;
+      border-color: #059669 !important;
+    }
+    .status-late {
+      background-color: #f59e0b !important;
+      color: #ffffff !important;
+      border-color: #d97706 !important;
+    }
+    .status-miss {
+      background-color: #0284c7 !important;
+      color: #ffffff !important;
+      border-color: #0369a1 !important;
+    }
+    .status-early {
+      background-color: #8b5cf6 !important;
+      color: #ffffff !important;
+      border-color: #7c3aed !important;
+    }
+    .status-absent {
+      background-color: #ef4444 !important;
+      color: #ffffff !important;
+      border-color: #dc2626 !important;
+    }
+    .student-card {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .student-card:hover {
+      transform: translateY(-2px);
+    }
+    /* 서류 미제출 학생 시각적 집중 깜빡임 애니메이션 */
+    @keyframes unsubmitted-blink {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6);
+        border-color: #ef4444;
+        background-color: rgba(254, 242, 242, 0.9);
+      }
+      50% {
+        box-shadow: 0 0 14px 4px rgba(239, 68, 68, 0.45);
+        border-color: #f87171;
+        background-color: rgba(254, 226, 226, 1);
+      }
+    }
+    .unsubmitted-card-blink {
+      animation: unsubmitted-blink 1.4s infinite ease-in-out !important;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-base-200 min-h-screen text-base-content antialiased pb-16">
+
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-30 bg-base-100/95 backdrop-blur border-b border-base-300 shadow-sm px-4 lg:px-8 py-3">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+      <!-- Title & Branding -->
+      <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2.5 bg-primary/15 text-primary rounded-2xl flex items-center justify-center shadow-inner">
+            <i data-lucide="book-heart" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl md:text-2xl font-black tracking-tight text-neutral">3학년 5반 출석부</h1>
+              <span class="badge badge-primary badge-sm font-semibold text-xs">총 22명</span>
+            </div>
+            <p class="text-xs text-base-content/60 hidden sm:block">태블릿 & 모바일 웹앱 • 스마트 학급 출결 시스템</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 md:hidden">
+          <button onclick="copyStudentViewLink()" class="btn btn-sm btn-circle btn-ghost text-accent" title="학생 보기용 링크 복사">
+            <i data-lucide="share-2" class="w-4 h-4"></i>
+          </button>
+          <button onclick="toggleStudentMode(true)" class="btn btn-sm btn-circle btn-ghost text-info" title="학생 보기 모드로 전환">
+            <i data-lucide="user-check" class="w-4 h-4"></i>
+          </button>
+          <button onclick="openInstallGuide()" class="btn btn-sm btn-circle btn-ghost text-primary" title="앱으로 설치 방법">
+            <i data-lucide="smartphone" class="w-4 h-4"></i>
+          </button>
+          <button onclick="openCloudSyncGuideModal()" class="btn btn-sm btn-circle btn-ghost text-secondary" title="스마트폰-PC 연동 안내">
+            <i data-lucide="cloud-cog" class="w-4 h-4"></i>
+          </button>
+          <button onclick="openDocManagementModal()" class="btn btn-sm btn-circle btn-ghost text-error" title="월별 서류 제출 관리">
+            <i data-lucide="file-check-2" class="w-4 h-4"></i>
+          </button>
+          <button onclick="openAcademicCalendar()" class="btn btn-sm btn-outline btn-secondary flex items-center gap-1 rounded-xl">
+            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+            <span>달력</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Header Action Buttons -->
+      <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+        <button id="studentLinkShareBtn" onclick="copyStudentViewLink()" class="btn btn-sm btn-outline btn-accent hidden md:inline-flex items-center gap-1.5 rounded-xl font-bold" title="학생들에게 전달할 보기 모드 링크 복사">
+          <i data-lucide="share-2" class="w-4 h-4"></i>
+          <span>학생용 링크 복사</span>
+        </button>
+
+        <button id="studentModeToggleBtn" onclick="toggleStudentMode(true)" class="btn btn-sm btn-outline btn-info hidden md:inline-flex items-center gap-1.5 rounded-xl font-bold" title="학생 화면으로 미리보기">
+          <i data-lucide="user-check" class="w-4 h-4"></i>
+          <span>학생 보기 모드</span>
+        </button>
+
+        <button onclick="openCloudSyncGuideModal()" class="btn btn-sm btn-outline btn-secondary hidden md:inline-flex items-center gap-1.5 rounded-xl font-bold teacher-only" title="컴퓨터와 스마트폰 실시간 자동 연동 설정">
+          <i data-lucide="cloud" class="w-4 h-4"></i>
+          <span>기기 연동 설정</span>
+        </button>
+
+        <button onclick="openInstallGuide()" class="btn btn-sm btn-ghost border border-base-300 hidden md:inline-flex items-center gap-1.5 rounded-xl hover:bg-base-200 text-neutral font-bold teacher-only" title="폰에서 앱처럼 설치하는 법">
+          <i data-lucide="smartphone" class="w-4 h-4 text-primary"></i>
+          <span>앱 설치</span>
+        </button>
+
+        <button onclick="openDocManagementModal()" class="btn btn-sm btn-outline btn-error hidden md:inline-flex items-center gap-1.5 rounded-xl font-bold teacher-only" title="월별 서류 제출 대상 학생 조회 및 관리">
+          <i data-lucide="file-check-2" class="w-4 h-4"></i>
+          <span>서류 제출 관리</span>
+        </button>
+
+        <button onclick="openAcademicCalendar()" class="btn btn-sm btn-outline btn-neutral hidden md:inline-flex items-center gap-1.5 rounded-xl">
+          <i data-lucide="calendar" class="w-4 h-4"></i>
+          <span>달력</span>
+        </button>
+
+        <button onclick="exportCurrentMonthExcel()" class="btn btn-sm btn-primary text-white shadow-sm rounded-xl font-bold flex items-center gap-1.5 teacher-only" title="현재 조회 중인 월의 출석부 전체 엑셀 다운로드">
+          <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+          <span id="monthlyExcelBtnLabel">월별 엑셀</span>
+        </button>
+
+        <!-- 학생 모드일 때 교사 모드로 돌아가는 버튼 -->
+        <button id="exitStudentModeBtn" onclick="requestExitStudentMode()" class="btn btn-sm btn-warning text-neutral rounded-xl font-black hidden items-center gap-1.5 shadow-sm" title="선생님 관리자 모드로 전환">
+          <i data-lucide="lock" class="w-4 h-4"></i>
+          <span>교사 모드로 복귀</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 학생 모드 상단 알림 배너 -->
+  <div id="studentModeBanner" class="hidden bg-gradient-to-r from-info/20 via-primary/20 to-secondary/20 border-b border-info/30 py-2.5 px-4">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm">
+      <div class="flex items-center gap-2 font-bold text-neutral">
+        <span class="badge badge-info badge-sm text-white font-black">학생 전용 뷰</span>
+        <span>실시간 출결 확인 모드입니다. 본인의 번호를 클릭하여 미제출 서류와 출결 내역을 확인하세요.</span>
+      </div>
+      <button onclick="requestExitStudentMode()" class="btn btn-xs btn-outline btn-neutral rounded-lg font-bold">
+        선생님 로그인
+      </button>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 lg:px-8 py-5 space-y-5">
+    <!-- Date Navigation Bar -->
+    <section class="bg-base-100 rounded-3xl p-4 border border-base-300 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
+        <button onclick="changeDate(-1)" class="btn btn-sm btn-circle btn-ghost touch-btn" title="이전 날">
+          <i data-lucide="chevron-left" class="w-5 h-5"></i>
+        </button>
+
+        <div class="text-center px-2">
+          <h2 id="currentDateDisplay" class="text-lg sm:text-xl font-black text-neutral tracking-tight"></h2>
+          <div class="flex items-center justify-center gap-1.5 mt-0.5">
+            <span id="saveStatusDot" class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span id="saveStatusIndicator" class="text-xs text-base-content/70 font-medium">로컬 안전 보관 중</span>
+          </div>
+          <!-- 기기 간 실시간 동기화 상태 및 안내 클릭 버튼 -->
+          <button onclick="openCloudSyncGuideModal()" class="mt-1 inline-flex items-center justify-center gap-1 text-[11px] text-base-content/70 hover:text-primary transition-colors cursor-pointer" title="클릭하여 연동 설정 확인">
+            <i data-lucide="cloud" class="w-3 h-3 text-secondary"></i>
+            <span id="currentUserIdDisplay" class="font-medium">동기화: 로컬 모드 (클릭하여 연동 안내)</span>
+          </button>
+        </div>
+
+        <button onclick="changeDate(1)" class="btn btn-sm btn-circle btn-ghost touch-btn" title="다음 날">
+          <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="goToToday()" class="btn btn-sm btn-outline btn-neutral rounded-xl font-bold px-3">
+          <i data-lucide="calendar-check" class="w-4 h-4"></i>
+          <span>오늘로 이동</span>
+        </button>
+        <!-- 데이터 백업/초기화 보조 메뉴 (선생님 전용) -->
+        <div class="dropdown dropdown-end teacher-only">
+          <label tabindex="0" class="btn btn-sm btn-ghost btn-circle" title="데이터 관리">
+            <i data-lucide="more-vertical" class="w-4 h-4"></i>
+          </label>
+          <ul tabindex="0" class="dropdown-content z-20 menu p-2 shadow-lg bg-base-100 rounded-2xl w-44 border border-base-300 text-xs">
+            <li><a onclick="exportBackupJson()"><i data-lucide="hard-drive-download" class="w-3.5 h-3.5"></i>전체 백업(JSON)</a></li>
+            <li><a onclick="importBackupJson()"><i data-lucide="hard-drive-upload" class="w-3.5 h-3.5"></i>백업 복원</a></li>
+            <li class="text-error"><a onclick="confirmResetCurrentDay()"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>오늘 기록 초기화</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Daily Status Summary Counters (정상, 지각, 결과, 조퇴, 결석 5개 항목) -->
+    <section class="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
+      <div class="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-2.5 sm:p-3 text-center shadow-xs">
+        <span class="text-xs font-bold text-emerald-700">정상 (특이사항 없음)</span>
+        <p id="statNormal" class="text-lg sm:text-2xl font-black text-emerald-800 mt-0.5">22</p>
+      </div>
+      <div class="bg-amber-50 border border-amber-200/80 rounded-2xl p-2.5 sm:p-3 text-center shadow-xs">
+        <span class="text-xs font-bold text-amber-700">지각</span>
+        <p id="statLate" class="text-lg sm:text-2xl font-black text-amber-800 mt-0.5">0</p>
+      </div>
+      <div class="bg-sky-50 border border-sky-200/80 rounded-2xl p-2.5 sm:p-3 text-center shadow-xs">
+        <span class="text-xs font-bold text-sky-700">결과</span>
+        <p id="statMiss" class="text-lg sm:text-2xl font-black text-sky-800 mt-0.5">0</p>
+      </div>
+      <div class="bg-purple-50 border border-purple-200/80 rounded-2xl p-2.5 sm:p-3 text-center shadow-xs">
+        <span class="text-xs font-bold text-purple-700">조퇴</span>
+        <p id="statEarly" class="text-lg sm:text-2xl font-black text-purple-800 mt-0.5">0</p>
+      </div>
+      <div class="bg-rose-50 border border-rose-200/80 rounded-2xl p-2.5 sm:p-3 text-center shadow-xs col-span-2 sm:col-span-1">
+        <span class="text-xs font-bold text-rose-700">결석</span>
+        <p id="statAbsent" class="text-lg sm:text-2xl font-black text-rose-800 mt-0.5">0</p>
+      </div>
+    </section>
+
+    <!-- Student Cards Grid (1 to 22) -->
+    <section>
+      <div id="studentsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+        <!-- Student Cards are dynamically injected by JavaScript -->
+      </div>
+    </section>
+  </main>
+
+  <!-- 1. Reason Input Modal (for Late, Miss, Early Leave, Absent) -->
+  <dialog id="reasonModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box rounded-3xl p-6 bg-base-100 border border-base-300">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
+      </form>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div id="reasonModalBadge" class="w-10 h-10 rounded-2xl flex items-center justify-center font-black text-white text-lg shadow-sm">
+          01
+        </div>
+        <div>
+          <h3 id="reasonModalTitle" class="text-lg font-bold text-neutral">1번 학생 사유 입력</h3>
+          <p id="reasonModalSubtitle" class="text-xs text-base-content/70">지각 사유 및 서류 상태를 등록합니다</p>
+        </div>
+      </div>
+
+      <!-- Hidden inputs for active editing context -->
+      <input type="hidden" id="modalStudentNumber">
+      <input type="hidden" id="modalStatusType">
+      <input type="hidden" id="modalSelectedPeriod" value="1교시">
+
+      <div class="space-y-4">
+        <!-- Reason Category Selector Buttons -->
+        <div>
+          <label class="label py-1">
+            <span class="label-text font-bold text-xs text-neutral">사유 구분 선택 <span class="text-error">*</span></span>
+          </label>
+          <div class="grid grid-cols-4 gap-2" id="reasonCategoryGroup">
+            <button type="button" onclick="selectReasonCategory('질병')" class="btn btn-sm btn-outline rounded-xl category-btn" data-category="질병">질병</button>
+            <button type="button" onclick="selectReasonCategory('미인정')" class="btn btn-sm btn-outline rounded-xl category-btn" data-category="미인정">미인정</button>
+            <button type="button" onclick="selectReasonCategory('기타')" class="btn btn-sm btn-outline rounded-xl category-btn" data-category="기타">기타</button>
+            <button type="button" onclick="selectReasonCategory('출석인정')" class="btn btn-sm btn-outline rounded-xl category-btn" data-category="출석인정">출석인정</button>
+          </div>
+        </div>
+
+        <!-- Occurrence Period Selector (for 지각, 결과, 조퇴) -->
+        <div id="modalPeriodFieldContainer">
+          <label class="label py-1 flex items-center justify-between">
+            <span class="label-text font-bold text-xs text-neutral">해당 시간/교시 선택 <span class="text-error">*</span></span>
+            <span id="periodHelpText" class="text-[11px] text-base-content/60 font-normal">단일 선택</span>
+          </label>
+          <div class="grid grid-cols-4 sm:grid-cols-8 gap-1.5" id="periodButtonGroup">
+            <!-- Dynamically populated based on statusType -->
+          </div>
+        </div>
+
+        <!-- Detailed Description Input -->
+        <div>
+          <label class="label py-1">
+            <span class="label-text font-bold text-xs text-neutral">상세 내용</span>
+          </label>
+          <textarea id="modalReasonDetail" rows="2.5" class="textarea textarea-bordered w-full rounded-2xl text-sm" placeholder="예: 병원 진료로 인한 지각, 독감으로 인한 조퇴 등 상세 내용을 적어주세요."></textarea>
+        </div>
+
+        <!-- Document Submission Status inside modal -->
+        <div id="modalDocFieldContainer" class="flex items-center justify-between p-3 bg-base-200/60 rounded-2xl border border-base-300">
+          <div>
+            <span class="text-xs font-bold text-neutral block">서류 제출 상태</span>
+            <span class="text-[11px] text-base-content/60" id="modalDocFieldDescription">증빙서류(출석인정원, 결석계, 확인서 등) 제출 여부</span>
+          </div>
+          <button type="button" id="docToggleBtn" onclick="toggleModalDocumentStatus()" class="btn btn-sm btn-error text-white rounded-xl font-bold">
+            서류 미제출
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-action mt-5 flex justify-between items-center gap-2">
+        <button type="button" id="deleteReasonBtn" onclick="deleteReasonEntry()" class="btn btn-sm btn-outline btn-error rounded-xl hidden font-bold flex items-center gap-1">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          <span>기록 삭제</span>
+        </button>
+        <div class="flex items-center gap-2 ml-auto">
+          <button type="button" onclick="closeReasonModal()" class="btn btn-sm btn-ghost rounded-xl">취소</button>
+          <button type="button" onclick="saveReasonEntry()" class="btn btn-sm btn-primary text-white rounded-xl px-5 font-bold">저장하기</button>
+        </div>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+
+  <!-- 2. Academic Year Calendar Modal -->
+  <dialog id="academicCalendarModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box max-w-4xl rounded-3xl p-6 bg-base-100 border border-base-300">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
+      </form>
+
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b border-base-300 pb-3">
+        <div>
+          <h3 class="text-xl font-black text-neutral flex items-center gap-2">
+            <i data-lucide="calendar" class="w-5 h-5 text-primary"></i>
+            <span id="calendarYearTitle">학년도 출결 달력</span>
+          </h3>
+          <p class="text-xs text-base-content/70">해당 학년도(3월 ~ 익년 2월)의 원하는 날짜를 클릭하면 해당일 출석부로 이동합니다.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>기록 있음</span>
+          <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-600"><span class="w-2 h-2 rounded-full bg-rose-500"></span>결결 있음</span>
+        </div>
+      </div>
+
+      <!-- Month Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3 no-scrollbar" id="calendarMonthTabs"></div>
+
+      <!-- Month Calendar View -->
+      <div class="bg-base-200/50 p-4 rounded-2xl border border-base-300/80 min-h-[320px]">
+        <div class="flex items-center justify-between mb-3 px-1">
+          <h4 id="calendarActiveMonthLabel" class="text-base font-bold text-neutral">2026년 9월</h4>
+          <span class="text-xs text-base-content/60 font-medium">선택 날짜: <span id="calendarSelectedDateNotice" class="font-bold text-primary">-</span></span>
+        </div>
+
+        <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs py-1.5 border-b border-base-300 text-base-content/70 mb-2">
+          <span class="text-rose-500">일</span>
+          <span>월</span>
+          <span>화</span>
+          <span>수</span>
+          <span>목</span>
+          <span>금</span>
+          <span class="text-blue-500">토</span>
+        </div>
+
+        <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 sm:gap-2"></div>
+      </div>
+
+      <div class="modal-action mt-4 flex justify-between items-center">
+        <button onclick="goToToday(); closeAcademicCalendar();" class="btn btn-sm btn-outline rounded-xl">오늘 날짜로 이동</button>
+        <button type="button" onclick="closeAcademicCalendar()" class="btn btn-sm btn-neutral rounded-xl px-5">닫기</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+
+  <!-- 3. Student Individual Summary Modal -->
+  <dialog id="studentSummaryModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box max-w-2xl rounded-3xl p-6 bg-base-100 border border-base-300">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
+      </form>
+
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-base-300">
+        <div class="flex items-center gap-3">
+          <div id="summaryStudentAvatar" class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-black text-xl shadow">
+            01
+          </div>
+          <div>
+            <h3 class="text-lg font-black text-neutral flex items-center gap-2">
+              <span id="summaryStudentTitle">1번 학생 출결 요약</span>
+              <span class="badge badge-sm badge-neutral font-normal text-xs">연간 누적 기록</span>
+            </h3>
+            <p class="text-xs text-base-content/70">지각 · 결과 · 조퇴 · 결석 내역과 서류 제출 현황입니다.</p>
+          </div>
+        </div>
+
+        <button id="studentExcelBtn" class="btn btn-sm btn-outline btn-primary rounded-xl font-bold flex items-center gap-1.5 self-start sm:self-center">
+          <i data-lucide="download" class="w-4 h-4"></i>
+          <span>결결 현황 엑셀</span>
+        </button>
+      </div>
+
+      <!-- Quick Counts for this student -->
+      <div class="grid grid-cols-4 gap-2 mb-4">
+        <div class="bg-amber-50 rounded-2xl p-2 text-center border border-amber-200">
+          <span class="text-xs font-bold text-amber-700">지각</span>
+          <p id="studentLateCount" class="text-lg sm:text-xl font-black text-amber-700">0회</p>
+        </div>
+        <div class="bg-sky-50 rounded-2xl p-2 text-center border border-sky-200">
+          <span class="text-xs font-bold text-sky-700">결과</span>
+          <p id="studentMissCount" class="text-lg sm:text-xl font-black text-sky-700">0회</p>
+        </div>
+        <div class="bg-purple-50 rounded-2xl p-2 text-center border border-purple-200">
+          <span class="text-xs font-bold text-purple-700">조퇴</span>
+          <p id="studentEarlyCount" class="text-lg sm:text-xl font-black text-purple-700">0회</p>
+        </div>
+        <div class="bg-rose-50 rounded-2xl p-2 text-center border border-rose-200">
+          <span class="text-xs font-bold text-rose-700">결석</span>
+          <p id="studentAbsentCount" class="text-lg sm:text-xl font-black text-rose-700">0회</p>
+        </div>
+      </div>
+
+      <!-- Records List -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-xs font-bold text-neutral px-1">
+          <span>날짜별 상세 기록 목록 (출석 제외)</span>
+          <span id="summaryTotalRecords" class="text-base-content/60 font-medium">총 0건</span>
+        </div>
+
+        <div class="bg-base-200/50 rounded-2xl border border-base-300 max-h-[300px] overflow-y-auto p-2" id="studentRecordsList"></div>
+      </div>
+
+      <div class="modal-action mt-5 flex justify-between items-center">
+        <span class="text-[11px] text-base-content/60">* 서류 미제출 버튼을 누르면 즉시 제출 완료로 변경됩니다.</span>
+        <button type="button" onclick="closeStudentSummaryModal()" class="btn btn-sm btn-neutral rounded-xl px-5">닫기</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+
+  <!-- 4. Mobile App (PWA) Installation Guide Modal -->
+  <dialog id="installGuideModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box rounded-3xl p-6 bg-base-100 border border-base-300 max-w-lg">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
+      </form>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-primary/20 text-primary flex items-center justify-center font-black text-xl">
+          <i data-lucide="smartphone" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-black text-neutral">스마트폰에서 앱처럼 쓰기</h3>
+          <p class="text-xs text-base-content/70">홈 화면에 추가하면 상단 주소창 없는 단독 앱으로 실행됩니다.</p>
+        </div>
+      </div>
+
+      <div class="space-y-3 text-xs sm:text-sm">
+        <div class="p-3.5 bg-base-200/70 rounded-2xl border border-base-300">
+          <div class="flex items-center gap-2 font-bold text-neutral mb-2">
+            <span class="badge badge-primary badge-sm">갤럭시 / 안드로이드</span>
+            <span>크롬 또는 삼성 인터넷</span>
+          </div>
+          <ol class="list-decimal list-inside space-y-1 text-base-content/80 pl-1 leading-relaxed">
+            <li>브라우저 우측 상단 <b>더보기 버튼 (점 세 개 ⋮)</b> 클릭</li>
+            <li>메뉴에서 <b>'홈 화면에 추가'</b> 또는 <b>'앱 설치'</b> 선택</li>
+            <li>홈 화면에 초록색 <b>'3-5 출석부'</b> 아이콘이 생성되어 터치 한 번으로 즉시 실행!</li>
+          </ol>
+        </div>
+
+        <div class="p-3.5 bg-base-200/70 rounded-2xl border border-base-300">
+          <div class="flex items-center gap-2 font-bold text-neutral mb-2">
+            <span class="badge badge-secondary badge-sm">아이폰 / 아이패드</span>
+            <span>Safari(사파리) 브라우저</span>
+          </div>
+          <ol class="list-decimal list-inside space-y-1 text-base-content/80 pl-1 leading-relaxed">
+            <li>Safari 하단 중앙의 <b>공유 버튼 (네모에 위쪽 화살표 ↑)</b> 클릭</li>
+            <li>아래로 스크롤하여 <b>'홈 화면에 추가'</b> 선택</li>
+            <li>우측 상단 <b>'추가'</b>를 누르면 바탕화면에 전용 앱 아이콘 생성!</li>
+          </ol>
+        </div>
+
+        <div class="bg-emerald-50 text-emerald-800 p-2.5 rounded-xl border border-emerald-200 text-xs flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4 shrink-0 text-emerald-600"></i>
+          <span>홈 화면 아이콘으로 실행 시 인터넷 주소창이 사라져 화면을 훨씬 넓고 빠르게 쓸 수 있습니다.</span>
+        </div>
+      </div>
+
+      <div class="modal-action mt-5 flex justify-end">
+        <button type="button" onclick="closeInstallGuide()" class="btn btn-sm btn-primary text-white rounded-xl px-5 font-bold">확인했습니다</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+
+  <!-- 5. Monthly Document Management Modal -->
+  <dialog id="docManagementModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box max-w-4xl rounded-3xl p-6 bg-base-100 border border-base-300">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
+      </form>
+
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-base-300">
+        <div>
+          <h3 class="text-xl font-black text-neutral flex items-center gap-2">
+            <i data-lucide="file-check-2" class="w-5 h-5 text-error"></i>
+            <span>월별 서류 제출 관리</span>
+          </h3>
+          <p class="text-xs text-base-content/70">결석 및 출석인정(지각·결과·조퇴) 증빙 서류 제출 대상자를 월별로 취합하고 관리합니다.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="exportMonthlyDocExcel()" class="btn btn-sm btn-outline btn-error rounded-xl font-bold flex items-center gap-1.5">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>해당 월 서류 엑셀</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3 bg-base-200/60 p-3 rounded-2xl border border-base-300">
+        <div class="flex items-center gap-2">
+          <button onclick="changeDocMonth(-1)" class="btn btn-xs sm:btn-sm btn-circle btn-ghost">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          </button>
+          <span id="docManagementCurrentMonthLabel" class="text-base font-black text-neutral min-w-[110px] text-center">2026년 9월</span>
+          <button onclick="changeDocMonth(1)" class="btn btn-xs sm:btn-sm btn-circle btn-ghost">
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="setDocMonthToCurrent()" class="btn btn-xs btn-outline btn-neutral rounded-lg font-bold ml-1">이번 달</button>
+        </div>
+
+        <div class="join join-horizontal bg-base-100 rounded-xl p-0.5 border border-base-300">
+          <button type="button" onclick="setDocFilter('all')" id="docFilterAll" class="btn btn-xs join-item btn-primary text-white font-bold">
+            전체 (<span id="docCountAll">0</span>)
+          </button>
+          <button type="button" onclick="setDocFilter('unsubmitted')" id="docFilterUnsubmitted" class="btn btn-xs join-item btn-ghost font-bold text-error">
+            미제출만 (<span id="docCountUnsubmitted">0</span>)
+          </button>
+          <button type="button" onclick="setDocFilter('submitted')" id="docFilterSubmitted" class="btn btn-xs join-item btn-ghost font-bold text-success">
+            제출완료 (<span id="docCountSubmitted">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-[11px] text-base-content/60 px-1 mb-2">
+        <span class="flex items-center gap-1 font-semibold text-neutral/80">
+          <i data-lucide="arrow-down-narrow-wide" class="w-3.5 h-3.5 text-primary"></i>
+          정렬 순서: <b>1순위 일자순(빠른날부터)</b> ➔ <b>2순위 번호순(1번~22번)</b>
+        </span>
+        <span>* 버튼을 누르면 즉시 제출/미제출 상태가 변경됩니다.</span>
+      </div>
+
+      <div class="bg-base-200/40 rounded-2xl border border-base-300 max-h-[380px] overflow-y-auto p-2" id="docManagementListContainer"></div>
+
+      <div class="modal-action mt-4 flex justify-between items-center">
+        <span class="text-xs text-base-content/70">
+          총 <b id="docFilteredTotalCount" class="text-neutral font-bold">0</b>건 표시 중
+        </span>
+        <button type="button" onclick="closeDocManagementModal()" class="btn btn-sm btn-neutral rounded-xl px-5">닫기</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+
+  <!-- 6. Cloud Synchronization Settings Modal -->
+  <dialog id="cloudSyncModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box rounded-3xl p-6 bg-base-100 border border-base-300 max-w-2xl max-h-[90vh] overflow-y-auto">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
+      </form>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-secondary/15 text-secondary flex items-center justify-center font-black text-xl">
+          <i data-lucide="cloud" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-black text-neutral">컴퓨터 ↔ 스마트폰 실시간 자동 연동</h3>
+          <p class="text-xs text-base-content/70">구글 무료 계정을 활용해 평생 무료로 두 기기를 실시간 연동하는 방법</p>
+        </div>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm">
+        <div class="p-3.5 bg-emerald-50/80 border border-emerald-200 rounded-2xl">
+          <div class="flex items-center justify-between font-bold text-emerald-900 mb-1">
+            <span class="flex items-center gap-1.5">
+              <i data-lucide="zap" class="w-4 h-4 text-emerald-600"></i>
+              방법 1. 지금 당장 10초 만에 연동하기 (가장 쉬움)
+            </span>
+            <span class="badge badge-success badge-sm text-white font-bold">10초 완성</span>
+          </div>
+          <p class="text-emerald-800 text-xs leading-relaxed">
+            컴퓨터 우측 상단 <b>[⋮] ➔ [전체 백업(JSON)]</b>을 카톡 '나와의 채팅'으로 폰에 보낸 뒤, 폰에서 <b>[⋮] ➔ [백업 복원]</b>을 누르면 즉시 똑같이 맞춰집니다.
+          </p>
+        </div>
+
+        <div class="p-4 bg-base-200/80 border border-base-300 rounded-2xl space-y-3">
+          <div class="flex items-center justify-between font-bold text-neutral">
+            <span class="flex items-center gap-1.5 text-sm">
+              <i data-lucide="key-round" class="w-4 h-4 text-primary"></i>
+              방법 2. 구글 무료 클라우드 키 발급 가이드 (5분 소요)
+            </span>
+            <a href="https://console.firebase.google.com/" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-primary text-white font-bold gap-1">
+              <span>구글 콘솔 바로가기</span>
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+          </div>
+
+          <div class="space-y-2.5 text-xs text-base-content/85 leading-relaxed">
+            <div class="p-2.5 bg-base-100 rounded-xl border border-base-300">
+              <p class="font-bold text-neutral mb-1">1단계: 프로젝트 생성</p>
+              <p>위 <b class="text-primary">[구글 콘솔 바로가기]</b>를 눌러 구글 로그인 후 <b>[프로젝트 추가]</b> 클릭 ➔ 프로젝트 이름(예: <code>class-3-5</code>) 입력 ➔ 애널리틱스는 끄고 <b>[프로젝트 만들기]</b>를 완료합니다.</p>
+            </div>
+
+            <div class="p-2.5 bg-base-100 rounded-xl border border-base-300">
+              <p class="font-bold text-neutral mb-1">2단계: 웹 앱(`&lt;/&gt;`) 등록 및 키 복사</p>
+              <p>프로젝트 홈 화면 중앙의 웹 아이콘 <b>&lt;/&gt;</b> 클릭 ➔ 앱 닉네임 입력 후 <b>[앱 등록]</b> ➔ 화면에 나오는 <code>const firebaseConfig = { ... }</code> 코드 전체를 그대로 복사합니다.</p>
+            </div>
+
+            <div class="p-2.5 bg-base-100 rounded-xl border border-base-300">
+              <p class="font-bold text-neutral mb-1">3단계: Firestore 데이터베이스 켜기</p>
+              <p>좌측 메뉴 <b>[빌드] ➔ [Firestore Database]</b> 클릭 ➔ <b>[데이터베이스 만들기]</b> ➔ 위치는 Seoul(asia-northeast3) 선택 ➔ 보안 규칙에서 반드시 <b>'테스트 모드에서 시작'</b>을 선택 후 [사용 설정]을 누릅니다.</p>
+            </div>
+
+            <div class="p-2.5 bg-base-100 rounded-xl border border-base-300">
+              <p class="font-bold text-neutral mb-1">4단계: 익명 로그인 허용</p>
+              <p>좌측 메뉴 <b>[빌드] ➔ [Authentication]</b> 클릭 ➔ <b>[시작하기]</b> ➔ 로그인 제공업체 목록 중 <b>[익명]</b>을 찾아 <b>'사용 설정'</b>을 켜고 저장합니다.</p>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-base-300">
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="font-bold text-neutral text-xs flex items-center gap-1">
+                <i data-lucide="clipboard-paste" class="w-3.5 h-3.5 text-secondary"></i>
+                5단계: 복사한 설정 키 붙여넣기
+              </label>
+              <span class="text-[11px] text-base-content/60">전체 코드 그대로 붙여넣어도 자동 인식됩니다</span>
+            </div>
+            <textarea id="customFirebaseConfigInput" rows="3" class="textarea textarea-bordered w-full font-mono text-[11px] rounded-xl leading-snug" placeholder='const firebaseConfig = {&#10;  apiKey: "AIzaSy...",&#10;  projectId: "...",&#10;  appId: "..."&#10;};'></textarea>
+            <div class="flex items-center justify-between mt-2">
+              <button type="button" onclick="clearCustomFirebaseConfig()" class="btn btn-xs btn-ghost text-error">설정 초기화</button>
+              <button type="button" onclick="saveCustomFirebaseConfig()" class="btn btn-sm btn-primary text-white font-bold px-4 rounded-xl">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                <span>클라우드 키 적용</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-action mt-4 flex justify-end">
+        <button type="button" onclick="closeCloudSyncGuideModal()" class="btn btn-sm btn-neutral rounded-xl px-5 font-bold">닫기</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+
+  <!-- 7. Teacher Pin Authentication Modal -->
+  <dialog id="teacherAuthModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box rounded-3xl p-6 bg-base-100 border border-base-300 max-w-sm">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
+      </form>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-2xl bg-warning/20 text-warning flex items-center justify-center font-black">
+          <i data-lucide="lock" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-neutral">선생님 관리자 인증</h3>
+          <p class="text-xs text-base-content/70">출결을 수정하려면 비밀번호를 입력하세요.</p>
+        </div>
+      </div>
+      <div class="space-y-3">
+        <input type="password" id="teacherPinInput" maxlength="6" class="input input-bordered w-full rounded-2xl text-center text-xl tracking-widest font-black" placeholder="••••" />
+      </div>
+      <div class="modal-action mt-4 flex justify-between">
+        <button type="button" onclick="document.getElementById('teacherAuthModal').close()" class="btn btn-sm btn-ghost rounded-xl">취소</button>
+        <button type="button" onclick="verifyTeacherPin()" class="btn btn-sm btn-primary text-white rounded-xl px-5 font-bold">인증하기</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+
+  <!-- 8. Student KakaoTalk Share Modal -->
+  <dialog id="studentShareModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box rounded-3xl p-6 bg-base-100 border border-base-300 max-w-lg">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
+      </form>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-11 h-11 rounded-2xl bg-[#fee500] text-[#3c1e1e] flex items-center justify-center font-black text-xl shadow-xs">
+          <i data-lucide="message-circle" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 class="text-base sm:text-lg font-black text-neutral">카카오톡 학생용 링크 공유</h3>
+          <p class="text-xs text-base-content/70">학생/학부모 알림장에 전달할 수 있는 안전 보기 링크입니다.</p>
+        </div>
+      </div>
+
+      <div class="space-y-3.5 text-xs sm:text-sm">
+        <div>
+          <label class="label py-1">
+            <span class="label-text font-bold text-xs text-neutral">학생 보기 전용 링크 URL</span>
+          </label>
+          <div class="join w-full">
+            <input id="studentShareUrlInput" type="text" readonly class="input input-bordered join-item w-full text-xs font-mono bg-base-200/60" />
+            <button onclick="executeCopyStudentLink()" class="btn join-item btn-primary text-white font-bold px-4">
+              복사
+            </button>
+          </div>
+        </div>
+
+        <div id="localFileWarningBox" class="hidden p-3 bg-amber-50 border border-amber-200 rounded-2xl text-amber-900 text-xs leading-relaxed space-y-1">
+          <p class="font-bold flex items-center gap-1.5 text-amber-950">
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i>
+            선생님, 확인해 주세요! (내 컴퓨터 파일로 열려 있는 경우)
+          </p>
+          <p>
+            현재 주소가 <code>file://</code> 또는 <code>blob:</code>(내 컴퓨터 안의 파일)로 시작하여, 이 링크를 그대로 카톡으로 보내면 학생 스마트폰에서는 열리지 않습니다.
+          </p>
+          <p class="pt-1 text-[11px] text-amber-800">
+            💡 <b>해결책:</b> 이 <code>index.html</code> 파일을 무료 웹 호스팅(예: <b>Vercel</b>, <b>GitHub Pages</b>, 또는 <b>Netlify</b>)에 업로드하여 발급된 인터넷 주소(<code>https://...</code>)로 접속 후 복사하시면 카카오톡에서 누구나 즉시 열 수 있습니다.
+          </p>
+        </div>
+
+        <div class="p-3 bg-base-200/70 rounded-2xl border border-base-300 text-xs text-base-content/80 space-y-1.5">
+          <p class="font-bold text-neutral">🛡️ 학생 보기 모드 안전 안내</p>
+          <ul class="list-disc list-inside space-y-0.5 text-base-content/70">
+            <li>학생은 출결 수정이나 삭제 버튼을 누를 수 없는 <b>'읽기 전용'</b>으로 열립니다.</li>
+            <li>선생님 모드로 전환 시 관리자 비밀번호 인증이 필요합니다.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-action mt-4 flex justify-end">
+        <button type="button" onclick="document.getElementById('studentShareModal').close()" class="btn btn-sm btn-neutral rounded-xl px-5 font-bold">닫기</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast toast-top toast-center z-50 pointer-events-none transition-all duration-300"></div>
+
+  <!-- Hidden File Input for Backup -->
+  <input type="file" id="backupFileInput" accept=".json" class="hidden" onchange="handleBackupFileUpload(event)" />
+
+  <script>
+    /* Global Constants & Application State */
+    const TOTAL_STUDENTS = 22;
+    const LOCAL_STORAGE_KEY = 'attendance_class_3_5_master_records_v2';
+    const FIREBASE_USER_CONFIG_KEY = 'attendance_class_3_5_firebase_cfg';
+    const TEACHER_PIN_KEY = 'attendance_class_3_5_pin';
+    const DEFAULT_TEACHER_PIN = '0323';
+
+    let isStudentMode = false;
+
+    const STUDENT_NAMES = [
+      '강시우', '강휘람', '구민재', '길근태', '김도훈',
+      '김동은', '김민기', '김예찬', '김진서', '김태유',
+      '문호상', '박범준', '박세혁', '이동현', '이봉규',
+      '이승현', '이원호', '이정민', '임재균', '정세호',
+      '조성빈', '정영산'
+    ];
+
+    function getStudentName(num) {
+      return STUDENT_NAMES[num - 1] || '';
+    }
+
+    function getStudentDisplayName(num) {
+      const name = getStudentName(num);
+      return name ? `${num}번 학생(${name})` : `${num}번 학생`;
+    }
+
+    function toggleStudentMode(enable) {
+      isStudentMode = enable;
+      try {
+        const url = new URL(window.location.href);
+        if (enable) {
+          url.searchParams.set('mode', 'student');
+        } else {
+          url.searchParams.delete('mode');
+        }
+        window.history.replaceState({}, '', url.toString());
+      } catch (err) {
+        console.warn('history.replaceState skipped in sandboxed environment:', err);
+      }
+
+      applyModeUI();
+      renderStudentsGrid();
+
+      if (enable) {
+        showToast('학생 보기 모드로 전환되었습니다. (수정 불가)', 'info');
+      } else {
+        showToast('선생님 관리자 모드로 전환되었습니다.', 'success');
+      }
+    }
+
+    function applyModeUI() {
+      const banner = document.getElementById('studentModeBanner');
+      const exitBtn = document.getElementById('exitStudentModeBtn');
+      const teacherElements = document.querySelectorAll('.teacher-only');
+      const studentModeToggleBtn = document.getElementById('studentModeToggleBtn');
+
+      if (isStudentMode) {
+        if (banner) banner.classList.remove('hidden');
+        if (exitBtn) {
+          exitBtn.classList.remove('hidden');
+          exitBtn.classList.add('inline-flex');
+        }
+        if (studentModeToggleBtn) studentModeToggleBtn.classList.add('hidden');
+        teacherElements.forEach(el => el.classList.add('hidden'));
+      } else {
+        if (banner) banner.classList.add('hidden');
+        if (exitBtn) {
+          exitBtn.classList.add('hidden');
+          exitBtn.classList.remove('inline-flex');
+        }
+        if (studentModeToggleBtn) studentModeToggleBtn.classList.remove('hidden');
+        teacherElements.forEach(el => el.classList.remove('hidden'));
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function requestExitStudentMode() {
+      const modal = document.getElementById('teacherAuthModal');
+      const input = document.getElementById('teacherPinInput');
+      if (input) input.value = '';
+      if (modal) modal.showModal();
+    }
+
+    function verifyTeacherPin() {
+      const input = document.getElementById('teacherPinInput');
+      const pin = input?.value.trim();
+      const savedPin = localStorage.getItem(TEACHER_PIN_KEY) || DEFAULT_TEACHER_PIN;
+
+      if (pin === savedPin) {
+        document.getElementById('teacherAuthModal').close();
+        toggleStudentMode(false);
+      } else {
+        showToast('비밀번호가 일치하지 않습니다. 다시 확인해 주세요.', 'error');
+      }
+    }
+
+    function getStudentShareLink() {
+      let link = window.location.href;
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('mode', 'student');
+        link = url.toString();
+      } catch (err) {
+        if (!link.includes('mode=student')) {
+          link += (link.includes('?') ? '&' : '?') + 'mode=student';
+        }
+      }
+      return link;
+    }
+
+    function copyStudentViewLink() {
+      const link = getStudentShareLink();
+      const isLocalOrBlob = link.startsWith('blob:') || link.startsWith('file:');
+
+      const modal = document.getElementById('studentShareModal');
+      const input = document.getElementById('studentShareUrlInput');
+      const warningBox = document.getElementById('localFileWarningBox');
+
+      if (input) input.value = link;
+      if (warningBox) {
+        if (isLocalOrBlob) {
+          warningBox.classList.remove('hidden');
+        } else {
+          warningBox.classList.add('hidden');
+        }
+      }
+
+      executeCopyStudentLink(false);
+
+      if (modal) {
+        modal.showModal();
+      }
+    }
+
+    function executeCopyStudentLink(showSuccessToast = true) {
+      const link = getStudentShareLink();
+      const tempInput = document.createElement('input');
+      tempInput.value = link;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        if (showSuccessToast) {
+          showToast('카카오톡 전달용 학생 링크가 복사되었습니다! 카톡에 붙여넣기(Ctrl+V)하세요.', 'success');
+        }
+      } catch (err) {
+        showToast('링크 복사 완료: ' + link, 'info');
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'class-3-5-attendance';
+    let db = null;
+    let auth = null;
+    let currentUser = null;
+    let isCloudReady = false;
+
+    let attendanceStore = loadLocalStoredData();
+
+    function loadLocalStoredData() {
+      try {
+        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === 'object') return parsed;
+        }
+      } catch (e) {
+        console.warn('LocalStorage load skipped:', e);
+      }
+      return {};
+    }
+
+    function persistLocalStoredData(data) {
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {
+        console.warn('LocalStorage save skipped:', e);
+      }
+    }
+
+    let currentDate = new Date();
+
+    function getAcademicYear(date) {
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      return (month >= 3) ? year : year - 1;
+    }
+
+    function formatDateKey(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function getFriendlyDateString(d) {
+      const days = ['일', '월', '화', '수', '목', '금', '토'];
+      const year = d.getFullYear();
+      const month = d.getMonth() + 1;
+      const date = d.getDate();
+      const dayName = days[d.getDay()];
+      return `${year}년 ${month}월 ${date}일 (${dayName})`;
+    }
+
+    async function initCloudSync() {
+      try {
+        let firebaseConfig = null;
+
+        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+          firebaseConfig = JSON.parse(__firebase_config);
+        } else {
+          const savedCfg = localStorage.getItem(FIREBASE_USER_CONFIG_KEY);
+          if (savedCfg) {
+            firebaseConfig = JSON.parse(savedCfg);
+          }
+        }
+
+        if (!firebaseConfig) {
+          updateSaveIndicator('로컬 저장 모드 (안전 보관)');
+          const idDisplay = document.getElementById('currentUserIdDisplay');
+          if (idDisplay) {
+            idDisplay.textContent = '동기화: 로컬 모드 (클릭하여 연동 안내)';
+          }
+          return;
+        }
+
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
+        const { getAuth, signInAnonymously, signInWithCustomToken } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+        const { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+
+        currentUser = auth.currentUser;
+        const userId = currentUser?.uid || crypto.randomUUID();
+        const userIdDisplay = document.getElementById('currentUserIdDisplay');
+        if (userIdDisplay) {
+          userIdDisplay.textContent = `실시간 연동 ID: ${userId.substring(0, 10)}... (연결됨)`;
+        }
+
+        isCloudReady = true;
+        updateSaveIndicator('클라우드 실시간 연동 완료');
+
+        const attendanceCol = collection(db, 'artifacts', appId, 'public', 'data', 'dailyAttendance');
+        onSnapshot(attendanceCol, (snapshot) => {
+          let updated = false;
+          snapshot.docChanges().forEach((change) => {
+            const dateKey = change.doc.id;
+            if (change.type === 'removed') {
+              delete attendanceStore[dateKey];
+              updated = true;
+            } else {
+              const data = change.doc.data();
+              if (data && data.records) {
+                attendanceStore[dateKey] = data.records;
+                updated = true;
+              }
+            }
+          });
+
+          if (updated) {
+            persistLocalStoredData(attendanceStore);
+            renderStudentsGrid();
+            const docModal = document.getElementById('docManagementModal');
+            if (docModal && docModal.open) {
+              renderDocManagementList();
+            }
+            updateSaveIndicator('클라우드 실시간 동기화됨');
+          }
+        }, (error) => {
+          console.error('Firestore onSnapshot error:', error);
+          updateSaveIndicator('동기화 수신 지연 (로컬 보관)');
+        });
+
+      } catch (err) {
+        console.warn('Cloud sync setup info:', err);
+        updateSaveIndicator('로컬 저장 모드 (기기 안전 보관)');
+      }
+    }
+
+    function loadAttendanceData() {
+      return attendanceStore;
+    }
+
+    async function saveAttendanceData(data) {
+      attendanceStore = data;
+      persistLocalStoredData(attendanceStore);
+
+      const dateKey = formatDateKey(currentDate);
+      const todayData = data[dateKey] || {};
+
+      if (isCloudReady && db && currentUser) {
+        updateSaveIndicator('클라우드에 저장 중...');
+        try {
+          const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+          const dayDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'dailyAttendance', dateKey);
+          await setDoc(dayDocRef, {
+            records: todayData,
+            updatedAt: new Date().toISOString(),
+            updatedBy: currentUser.uid
+          }, { merge: true });
+
+          updateSaveIndicator('클라우드 실시간 자동 저장됨');
+        } catch (error) {
+          console.error('Failed to save to cloud storage:', error);
+          updateSaveIndicator('로컬 저장 완료 (클라우드 일시 지연)');
+        }
+      } else {
+        updateSaveIndicator('로컬 기기 안전 저장됨');
+      }
+    }
+
+    function updateSaveIndicator(text) {
+      const el = document.getElementById('saveStatusIndicator');
+      if (el) {
+        const timeStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        el.textContent = `${text} (${timeStr})`;
+      }
+    }
+
+    function openCloudSyncGuideModal() {
+      const modal = document.getElementById('cloudSyncModal');
+      if (modal) {
+        const customInput = document.getElementById('customFirebaseConfigInput');
+        const saved = localStorage.getItem(FIREBASE_USER_CONFIG_KEY);
+        if (customInput && saved) {
+          customInput.value = saved;
+        }
+        modal.showModal();
+      }
+    }
+
+    function closeCloudSyncGuideModal() {
+      const modal = document.getElementById('cloudSyncModal');
+      if (modal) modal.close();
+    }
+
+    function saveCustomFirebaseConfig() {
+      const input = document.getElementById('customFirebaseConfigInput');
+      const val = input ? input.value.trim() : '';
+      if (!val) {
+        showToast('설정 내용을 입력해 주세요.', 'warning');
+        return;
+      }
+      try {
+        let cfgObj = null;
+        if (val.includes('{') && val.includes('}')) {
+          const jsonText = val.substring(val.indexOf('{'), val.lastIndexOf('}') + 1);
+          try {
+            cfgObj = JSON.parse(jsonText);
+          } catch(e) {
+            cfgObj = new Function(`return ${jsonText};`)();
+          }
+        }
+        if (cfgObj && (cfgObj.apiKey || cfgObj.projectId)) {
+          localStorage.setItem(FIREBASE_USER_CONFIG_KEY, JSON.stringify(cfgObj));
+          showToast('클라우드 설정이 저장되었습니다. 페이지를 새로고침하여 연결합니다.', 'success');
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          showToast('올바른 Firebase 설정(apiKey, projectId 등)을 찾을 수 없습니다.', 'error');
+        }
+      } catch (err) {
+        showToast('설정 코드를 파싱하는 중 오류가 발생했습니다.', 'error');
+      }
+    }
+
+    function clearCustomFirebaseConfig() {
+      localStorage.removeItem(FIREBASE_USER_CONFIG_KEY);
+      const input = document.getElementById('customFirebaseConfigInput');
+      if (input) input.value = '';
+      showToast('클라우드 설정이 초기화되었습니다. 로컬 모드로 전환됩니다.', 'info');
+      setTimeout(() => location.reload(), 1200);
+    }
+
+    function getStudentDayRecord(dayData, num) {
+      const r = dayData ? dayData[num] : null;
+      if (!r) return null;
+
+      let late = r.late || null;
+      let miss = r.miss || null;
+      let early = r.early || null;
+      let absent = r.absent || null;
+      let isPresent = r.isPresent === true || r.status === '출석';
+
+      if (!late && !miss && !early && !absent) {
+        if (r.status === '지각') {
+          late = { 
+            period: r.period || '조회', 
+            category: r.category || '질병', 
+            reason: r.reason || '',
+            docSubmitted: r.docSubmitted === true 
+          };
+        } else if (r.status === '결과') {
+          miss = { 
+            period: r.period || '1교시', 
+            category: r.category || '질병', 
+            reason: r.reason || '',
+            docSubmitted: r.docSubmitted === true 
+          };
+        } else if (r.status === '조퇴') {
+          early = { 
+            period: r.period || '5교시', 
+            category: r.category || '질병', 
+            reason: r.reason || '',
+            docSubmitted: r.docSubmitted === true 
+          };
+        } else if (r.status === '결석') {
+          absent = { 
+            category: r.category || '질병', 
+            reason: r.reason || '', 
+            docSubmitted: r.docSubmitted === true 
+          };
+        }
+      }
+
+      return { isPresent, late, miss, early, absent, updatedAt: r.updatedAt };
+    }
+
+    function renderStudentsGrid() {
+      const container = document.getElementById('studentsGrid');
+      if (!container) return;
+
+      const dateKey = formatDateKey(currentDate);
+      const allData = loadAttendanceData();
+      const todayData = allData[dateKey] || {};
+
+      let normalCount = 0;
+      let lateCount = 0;
+      let missCount = 0;
+      let earlyCount = 0;
+      let absentCount = 0;
+
+      let html = '';
+
+      for (let num = 1; num <= TOTAL_STUDENTS; num++) {
+        const record = getStudentDayRecord(todayData, num);
+
+        const hasLate = !!(record && record.late);
+        const hasMiss = !!(record && record.miss);
+        const hasEarly = !!(record && record.early);
+        const hasAbsent = !!(record && record.absent);
+        const isNormal = !hasLate && !hasMiss && !hasEarly && !hasAbsent;
+
+        if (hasLate) lateCount++;
+        if (hasMiss) missCount++;
+        if (hasEarly) earlyCount++;
+        if (hasAbsent) absentCount++;
+        if (isNormal) normalCount++;
+
+        let cardBorderClass = 'border-base-300';
+        let cardBgClass = 'bg-base-100';
+
+        if (hasAbsent) {
+          cardBorderClass = 'border-rose-300/80 ring-1 ring-rose-300/40';
+          cardBgClass = 'bg-rose-50/25';
+        } else if ([hasLate, hasMiss, hasEarly].filter(Boolean).length >= 2) {
+          cardBorderClass = 'border-primary/80 ring-1 ring-primary/40';
+          cardBgClass = 'bg-gradient-to-br from-amber-50/20 via-sky-50/20 to-purple-50/20';
+        } else if (hasLate) {
+          cardBorderClass = 'border-amber-300/80 ring-1 ring-amber-300/40';
+          cardBgClass = 'bg-amber-50/25';
+        } else if (hasMiss) {
+          cardBorderClass = 'border-sky-300/80 ring-1 ring-sky-300/40';
+          cardBgClass = 'bg-sky-50/25';
+        } else if (hasEarly) {
+          cardBorderClass = 'border-purple-300/80 ring-1 ring-purple-300/40';
+          cardBgClass = 'bg-purple-50/25';
+        }
+
+        let docTargetType = null;
+        let docSubmitted = false;
+
+        // 미인정은 서류 제출 대상에서 제외
+        if (hasAbsent && record.absent.category !== '미인정') {
+          docTargetType = 'absent';
+          docSubmitted = record.absent.docSubmitted === true;
+        } else if (hasLate && record.late.category === '출석인정') {
+          docTargetType = 'late';
+          docSubmitted = record.late.docSubmitted === true;
+        } else if (hasMiss && record.miss.category === '출석인정') {
+          docTargetType = 'miss';
+          docSubmitted = record.miss.docSubmitted === true;
+        } else if (hasEarly && record.early.category === '출석인정') {
+          docTargetType = 'early';
+          docSubmitted = record.early.docSubmitted === true;
+        }
+
+        const showDocButton = docTargetType !== null;
+        const isDocUnsubmitted = showDocButton && !docSubmitted;
+
+        if (isStudentMode && isDocUnsubmitted) {
+          cardBorderClass = 'border-rose-500 border-2 unsubmitted-card-blink';
+          cardBgClass = 'bg-rose-50';
+        }
+
+        const docBtnClass = docSubmitted 
+          ? 'btn-success text-white' 
+          : 'btn-error text-white animate-pulse';
+        const docBtnText = docSubmitted ? '서류 제출' : '서류 미제출';
+        const docBtnIcon = docSubmitted ? 'file-check' : 'file-warning';
+
+        const displayName = getStudentDisplayName(num);
+
+        const statusBadges = [];
+        if (hasLate) statusBadges.push('지');
+        if (hasMiss) statusBadges.push('결과');
+        if (hasEarly) statusBadges.push('조');
+        const multiStatusText = statusBadges.length > 1 ? statusBadges.join('+') : '';
+
+        html += `
+          <div class="student-card ${cardBgClass} rounded-2xl p-3.5 border ${cardBorderClass} shadow-sm flex flex-col justify-between gap-3">
+            <div class="flex items-center justify-between">
+              <button onclick="openStudentSummary(${num})" class="group flex items-center gap-2 touch-btn focus:outline-none" title="${displayName} 상세 요약 보기">
+                <div class="w-8 h-8 rounded-xl bg-neutral text-neutral-content font-black text-sm flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0">
+                  ${String(num).padStart(2, '0')}
+                </div>
+                <div class="text-left">
+                  <span class="font-bold text-sm text-neutral group-hover:text-primary transition-colors flex items-center gap-1">
+                    ${displayName}
+                    <i data-lucide="external-link" class="w-3 h-3 text-base-content/40 group-hover:text-primary shrink-0"></i>
+                  </span>
+                </div>
+              </button>
+
+              ${showDocButton ? `
+                <button ${isStudentMode ? 'disabled' : `onclick="toggleDocStatus(${num}, '${docTargetType}')"`} class="btn btn-xs ${docBtnClass} rounded-xl px-2.5 font-bold flex items-center gap-1 shadow-sm touch-btn shrink-0 ${isStudentMode ? 'cursor-default opacity-95' : ''}" title="${isStudentMode ? '서류 제출 상태' : '클릭하여 서류 제출 상태 변경'}">
+                  <i data-lucide="${docBtnIcon}" class="w-3 h-3"></i>
+                  <span>${docBtnText}</span>
+                </button>
+              ` : `
+                <div class="flex items-center gap-1">
+                  ${multiStatusText ? `<span class="badge badge-xs badge-neutral font-bold text-[10px]">${multiStatusText}</span>` : ''}
+                  <span class="text-[11px] text-base-content/40 font-medium shrink-0">3-5</span>
+                </div>
+              `}
+            </div>
+
+            ${isStudentMode ? `
+            <div class="p-2.5 rounded-xl ${isDocUnsubmitted ? 'bg-rose-100/90 border border-rose-300 animate-pulse' : 'bg-base-200/50 border border-base-300'} text-center">
+              ${isNormal ? `
+                <span class="text-xs font-bold text-emerald-700 flex items-center justify-center gap-1">
+                  <i data-lucide="smile" class="w-4 h-4 text-emerald-600"></i>
+                  오늘 정상 출석
+                </span>
+              ` : `
+                <div class="space-y-1">
+                  <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                    ${hasAbsent ? '<span class="badge badge-sm badge-error font-bold text-white">결석</span>' : ''}
+                    ${hasLate ? '<span class="badge badge-sm badge-warning font-bold">지각</span>' : ''}
+                    ${hasMiss ? '<span class="badge badge-sm bg-sky-500 text-white font-bold border-sky-600">결과</span>' : ''}
+                    ${hasEarly ? '<span class="badge badge-sm badge-secondary font-bold text-white">조퇴</span>' : ''}
+                  </div>
+                  ${isDocUnsubmitted ? `
+                    <div class="text-[11px] font-black text-rose-700 flex items-center justify-center gap-1 pt-0.5">
+                      <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-600 shrink-0"></i>
+                      <span>증빙서류 제출이 필요합니다!</span>
+                    </div>
+                  ` : ''}
+                </div>
+              `}
+            </div>
+            ` : `
+            <div class="grid grid-cols-4 gap-1.5">
+              <button onclick="promptReason(${num}, '지각')" class="btn btn-sm px-1 rounded-xl font-bold touch-btn border ${hasLate ? 'status-late shadow-md' : 'btn-ghost bg-base-200/70 text-base-content/80 hover:bg-amber-100'}">
+                <i data-lucide="clock" class="w-3.5 h-3.5 hidden sm:inline"></i>
+                <span>지각</span>
+              </button>
+              <button onclick="promptReason(${num}, '결과')" class="btn btn-sm px-1 rounded-xl font-bold touch-btn border ${hasMiss ? 'status-miss shadow-md' : 'btn-ghost bg-base-200/70 text-base-content/80 hover:bg-sky-100'}">
+                <i data-lucide="book-open" class="w-3.5 h-3.5 hidden sm:inline"></i>
+                <span>결과</span>
+              </button>
+              <button onclick="promptReason(${num}, '조퇴')" class="btn btn-sm px-1 rounded-xl font-bold touch-btn border ${hasEarly ? 'status-early shadow-md' : 'btn-ghost bg-base-200/70 text-base-content/80 hover:bg-purple-100'}">
+                <i data-lucide="log-out" class="w-3.5 h-3.5 hidden sm:inline"></i>
+                <span>조퇴</span>
+              </button>
+              <button onclick="promptReason(${num}, '결석')" class="btn btn-sm px-1 rounded-xl font-bold touch-btn border ${hasAbsent ? 'status-absent shadow-md' : 'btn-ghost bg-base-200/70 text-base-content/80 hover:bg-rose-100'}">
+                <i data-lucide="user-x" class="w-3.5 h-3.5 hidden sm:inline"></i>
+                <span>결석</span>
+              </button>
+            </div>
+            `}
+
+            <div class="bg-base-200/60 rounded-xl px-2.5 py-1.5 text-xs flex items-center justify-between min-h-[36px] border border-base-300/40">
+              ${hasAbsent ? `
+                <div class="flex items-center justify-between w-full gap-2">
+                  <div class="truncate flex items-center gap-1">
+                    <span class="badge badge-xs badge-error font-bold">${record.absent.category || '결석'}</span>
+                    <span class="text-neutral/80 truncate text-[11px]" title="${record.absent.reason}">${record.absent.reason || '상세 사유 없음'}</span>
+                  </div>
+                  ${!isStudentMode ? `<button onclick="promptReason(${num}, '결석')" class="text-[10px] text-primary underline shrink-0 font-medium">수정</button>` : ''}
+                </div>
+              ` : (hasLate || hasMiss || hasEarly) ? `
+                <div class="space-y-1 w-full py-0.5">
+                  ${hasLate ? `
+                    <div class="flex items-center justify-between w-full gap-1 text-[11px]">
+                      <div class="truncate flex items-center gap-1">
+                        <span class="badge badge-xs badge-warning font-bold">지각</span>
+                        <span class="badge badge-xs badge-neutral font-semibold">${record.late.period || '조회'}</span>
+                        <span class="badge badge-xs ${record.late.category === '출석인정' ? 'badge-primary font-bold' : 'badge-outline font-semibold'}">${record.late.category || '질병'}</span>
+                        <span class="text-neutral/80 truncate" title="${record.late.reason}">${record.late.reason || '사유없음'}</span>
+                      </div>
+                      ${!isStudentMode ? `<button onclick="promptReason(${num}, '지각')" class="text-[10px] text-amber-700 font-bold underline shrink-0">수정</button>` : ''}
+                    </div>
+                  ` : ''}
+                  ${hasMiss ? `
+                    <div class="flex items-center justify-between w-full gap-1 text-[11px] ${hasLate ? 'border-t border-base-300/50 pt-1' : ''}">
+                      <div class="truncate flex items-center gap-1">
+                        <span class="badge badge-xs bg-sky-500 text-white font-bold border-none">결과</span>
+                        <span class="badge badge-xs badge-neutral font-semibold">${record.miss.period || '1교시'}</span>
+                        <span class="badge badge-xs ${record.miss.category === '출석인정' ? 'badge-primary font-bold' : 'badge-outline font-semibold'}">${record.miss.category || '질병'}</span>
+                        <span class="text-neutral/80 truncate" title="${record.miss.reason}">${record.miss.reason || '사유없음'}</span>
+                      </div>
+                      ${!isStudentMode ? `<button onclick="promptReason(${num}, '결과')" class="text-[10px] text-sky-700 font-bold underline shrink-0">수정</button>` : ''}
+                    </div>
+                  ` : ''}
+                  ${hasEarly ? `
+                    <div class="flex items-center justify-between w-full gap-1 text-[11px] ${(hasLate || hasMiss) ? 'border-t border-base-300/50 pt-1' : ''}">
+                      <div class="truncate flex items-center gap-1">
+                        <span class="badge badge-xs badge-secondary font-bold">조퇴</span>
+                        <span class="badge badge-xs badge-neutral font-semibold">${record.early.period || '5교시'}</span>
+                        <span class="badge badge-xs ${record.early.category === '출석인정' ? 'badge-primary font-bold' : 'badge-outline font-semibold'}">${record.early.category || '질병'}</span>
+                        <span class="text-neutral/80 truncate" title="${record.early.reason}">${record.early.reason || '사유없음'}</span>
+                      </div>
+                      ${!isStudentMode ? `<button onclick="promptReason(${num}, '조퇴')" class="text-[10px] text-purple-700 font-bold underline shrink-0">수정</button>` : ''}
+                    </div>
+                  ` : ''}
+                </div>
+              ` : `
+                <div class="text-emerald-700 font-semibold text-[11px] flex items-center gap-1">
+                  <i data-lucide="smile" class="w-3.5 h-3.5 text-emerald-600"></i>
+                  <span>정상 (특이사항 없음)</span>
+                </div>
+              `}
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+
+      const statNormal = document.getElementById('statNormal');
+      const statLate = document.getElementById('statLate');
+      const statMiss = document.getElementById('statMiss');
+      const statEarly = document.getElementById('statEarly');
+      const statAbsent = document.getElementById('statAbsent');
+
+      if (statNormal) statNormal.textContent = normalCount;
+      if (statLate) statLate.textContent = lateCount;
+      if (statMiss) statMiss.textContent = missCount;
+      if (statEarly) statEarly.textContent = earlyCount;
+      if (statAbsent) statAbsent.textContent = absentCount;
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function updateDateDisplay() {
+      const displayElem = document.getElementById('currentDateDisplay');
+      if (displayElem) {
+        displayElem.textContent = getFriendlyDateString(currentDate);
+      }
+      const monthlyBtnLabel = document.getElementById('monthlyExcelBtnLabel');
+      if (monthlyBtnLabel) {
+        monthlyBtnLabel.textContent = `${currentDate.getMonth() + 1}월 엑셀`;
+      }
+      renderStudentsGrid();
+    }
+
+    function changeDate(days) {
+      currentDate.setDate(currentDate.getDate() + days);
+      updateDateDisplay();
+    }
+
+    function goToToday() {
+      currentDate = new Date();
+      updateDateDisplay();
+      showToast('오늘 날짜로 이동했습니다.', 'info');
+    }
+
+    function toggleDocStatus(studentNum, targetType = 'absent') {
+      const dateKey = formatDateKey(currentDate);
+      const allData = loadAttendanceData();
+      if (!allData[dateKey] || !allData[dateKey][studentNum]) return;
+
+      const rec = getStudentDayRecord(allData[dateKey], studentNum);
+      if (!rec) return;
+
+      let targetItem = null;
+      let targetLabel = '서류';
+
+      if (targetType === 'absent' && rec.absent) {
+        targetItem = rec.absent;
+        targetLabel = '결석 서류';
+      } else if (targetType === 'late' && rec.late) {
+        targetItem = rec.late;
+        targetLabel = '출석인정 지각 서류';
+      } else if (targetType === 'miss' && rec.miss) {
+        targetItem = rec.miss;
+        targetLabel = '출석인정 결과 서류';
+      } else if (targetType === 'early' && rec.early) {
+        targetItem = rec.early;
+        targetLabel = '출석인정 조퇴 서류';
+      }
+
+      if (!targetItem) return;
+
+      targetItem.docSubmitted = !targetItem.docSubmitted;
+      rec.updatedAt = new Date().toISOString();
+      allData[dateKey][studentNum] = rec;
+
+      saveAttendanceData(allData);
+      renderStudentsGrid();
+
+      const statusMsg = targetItem.docSubmitted ? '제출 완료로 변경되었습니다.' : '미제출 상태로 변경되었습니다.';
+      showToast(`${getStudentDisplayName(studentNum)}: ${targetLabel} ${statusMsg}`, targetItem.docSubmitted ? 'success' : 'warning');
+    }
+
+    let activeCategory = '질병';
+    let activePeriod = '1교시';
+    let selectedPeriods = []; // 결과 복수 교시 선택 배열
+    let modalDocStatus = false;
+
+    function updateModalDocVisibility(statusType, category) {
+      const docContainer = document.getElementById('modalDocFieldContainer');
+      const docDesc = document.getElementById('modalDocFieldDescription');
+      if (!docContainer) return;
+
+      // 미인정은 결석이든 지각/결과/조퇴든 서류 제출 대상에서 완전 제외
+      if (category === '미인정') {
+        docContainer.style.display = 'none';
+        return;
+      }
+
+      // 결석(미인정 제외) 또는 지각/결과/조퇴의 출석인정인 경우에만 서류 제출 노출
+      const isEligible = (statusType === '결석') || ((statusType === '지각' || statusType === '결과' || statusType === '조퇴') && category === '출석인정');
+      if (isEligible) {
+        docContainer.style.display = 'flex';
+        if (statusType === '결석') {
+          docDesc.textContent = '결석계, 처방전, 진단서 등 증빙서류 제출 여부';
+        } else {
+          docDesc.textContent = '출석인정원, 확인서 등 증빙서류 제출 여부';
+        }
+      } else {
+        docContainer.style.display = 'none';
+      }
+    }
+
+    function promptReason(studentNum, statusType) {
+      const dateKey = formatDateKey(currentDate);
+      const allData = loadAttendanceData();
+      const rec = getStudentDayRecord(allData[dateKey] || {}, studentNum);
+
+      document.getElementById('modalStudentNumber').value = studentNum;
+      document.getElementById('modalStatusType').value = statusType;
+
+      const displayName = getStudentDisplayName(studentNum);
+      document.getElementById('reasonModalBadge').textContent = String(studentNum).padStart(2, '0');
+      document.getElementById('reasonModalTitle').textContent = `${displayName} ${statusType} 사유 등록`;
+      document.getElementById('reasonModalSubtitle').textContent = `${getFriendlyDateString(currentDate)} ${statusType} 처리 및 세부 사유 입력`;
+
+      const badgeElem = document.getElementById('reasonModalBadge');
+      badgeElem.className = 'w-10 h-10 rounded-2xl flex items-center justify-center font-black text-white text-lg shadow-sm ';
+      if (statusType === '지각') badgeElem.classList.add('bg-amber-500');
+      else if (statusType === '결과') badgeElem.classList.add('bg-sky-600');
+      else if (statusType === '조퇴') badgeElem.classList.add('bg-purple-500');
+      else badgeElem.classList.add('bg-rose-500');
+
+      let targetItem = null;
+      if (rec) {
+        if (statusType === '지각') targetItem = rec.late;
+        else if (statusType === '결과') targetItem = rec.miss;
+        else if (statusType === '조퇴') targetItem = rec.early;
+        else if (statusType === '결석') targetItem = rec.absent;
+      }
+
+      const deleteBtn = document.getElementById('deleteReasonBtn');
+      if (deleteBtn) {
+        if (targetItem) {
+          deleteBtn.classList.remove('hidden');
+          deleteBtn.querySelector('span').textContent = `${statusType} 삭제`;
+        } else {
+          deleteBtn.classList.add('hidden');
+        }
+      }
+
+      activeCategory = targetItem?.category || '질병';
+      modalDocStatus = targetItem?.docSubmitted === true;
+
+      selectReasonCategory(activeCategory);
+
+      const periodContainer = document.getElementById('modalPeriodFieldContainer');
+      const periodBtnGroup = document.getElementById('periodButtonGroup');
+      const periodHelpText = document.getElementById('periodHelpText');
+      
+      if (statusType === '지각' || statusType === '결과' || statusType === '조퇴') {
+        periodContainer.style.display = 'block';
+
+        let periodsList = [];
+        let defaultPeriod = '';
+
+        if (statusType === '지각') {
+          periodsList = ['조회', '1교시', '2교시', '3교시', '4교시', '5교시', '6교시', '7교시'];
+          defaultPeriod = '조회';
+          if (periodHelpText) periodHelpText.textContent = '단일 선택';
+        } else if (statusType === '결과') {
+          periodsList = ['1교시', '2교시', '3교시', '4교시', '5교시', '6교시', '7교시'];
+          defaultPeriod = '1교시';
+          if (periodHelpText) periodHelpText.textContent = '다중 선택 가능 (터치하여 추가/해제)';
+        } else if (statusType === '조퇴') {
+          periodsList = ['1교시', '2교시', '3교시', '4교시', '5교시', '6교시', '7교시', '종례'];
+          defaultPeriod = '5교시';
+          if (periodHelpText) periodHelpText.textContent = '단일 선택';
+        }
+
+        let buttonsHtml = '';
+        periodsList.forEach(p => {
+          buttonsHtml += `
+            <button type="button" onclick="handlePeriodButtonClick('${p}', '${statusType}')" class="btn btn-sm btn-outline rounded-xl period-btn font-bold px-1" data-period="${p}">
+              ${p}
+            </button>
+          `;
+        });
+        periodBtnGroup.innerHTML = buttonsHtml;
+
+        if (statusType === '결과') {
+          // 복수 선택 지원
+          if (targetItem && targetItem.period) {
+            // 콤마로 구분된 여러 교시 파싱
+            selectedPeriods = targetItem.period.split(',').map(s => s.trim()).filter(Boolean);
+          } else {
+            selectedPeriods = [defaultPeriod];
+          }
+          syncMultiPeriodButtons();
+        } else {
+          // 지각, 조퇴는 단일 선택
+          activePeriod = (targetItem?.period && periodsList.includes(targetItem.period))
+            ? targetItem.period
+            : defaultPeriod;
+          selectModalPeriod(activePeriod);
+        }
+      } else {
+        periodContainer.style.display = 'none';
+        activePeriod = '';
+        selectedPeriods = [];
+      }
+
+      updateModalDocVisibility(statusType, activeCategory);
+      updateModalDocButton();
+
+      document.getElementById('modalReasonDetail').value = targetItem?.reason || '';
+
+      const modal = document.getElementById('reasonModal');
+      modal.showModal();
+    }
+
+    function handlePeriodButtonClick(period, statusType) {
+      if (statusType === '결과') {
+        const index = selectedPeriods.indexOf(period);
+        if (index > -1) {
+          // 이미 선택된 경우 제거 (최소 1개 이상 유지 권장)
+          if (selectedPeriods.length > 1) {
+            selectedPeriods.splice(index, 1);
+          } else {
+            showToast('최소 1개 교시 이상 선택되어야 합니다.', 'warning');
+            return;
+          }
+        } else {
+          selectedPeriods.push(period);
+        }
+        // 1교시~7교시 순서대로 정렬
+        selectedPeriods.sort((a, b) => parseInt(a) - parseInt(b));
+        syncMultiPeriodButtons();
+      } else {
+        selectModalPeriod(period);
+      }
+    }
+
+    function syncMultiPeriodButtons() {
+      const buttons = document.querySelectorAll('#periodButtonGroup .period-btn');
+      buttons.forEach(btn => {
+        const p = btn.getAttribute('data-period');
+        if (selectedPeriods.includes(p)) {
+          btn.classList.remove('btn-outline');
+          btn.classList.add('btn-primary', 'text-white');
+        } else {
+          btn.classList.remove('btn-primary', 'text-white');
+          btn.classList.add('btn-outline');
+        }
+      });
+      document.getElementById('modalSelectedPeriod').value = selectedPeriods.join(', ');
+    }
+
+    function selectModalPeriod(period) {
+      activePeriod = period;
+      document.getElementById('modalSelectedPeriod').value = period;
+      const buttons = document.querySelectorAll('#periodButtonGroup .period-btn');
+      buttons.forEach(btn => {
+        if (btn.getAttribute('data-period') === period) {
+          btn.classList.remove('btn-outline');
+          btn.classList.add('btn-primary', 'text-white');
+        } else {
+          btn.classList.remove('btn-primary', 'text-white');
+          btn.classList.add('btn-outline');
+        }
+      });
+    }
+
+    function selectReasonCategory(category) {
+      activeCategory = category;
+      const buttons = document.querySelectorAll('#reasonCategoryGroup .category-btn');
+      buttons.forEach(btn => {
+        const cat = btn.getAttribute('data-category');
+        if (cat === category) {
+          btn.classList.remove('btn-outline');
+          btn.classList.add('btn-primary', 'text-white');
+        } else {
+          btn.classList.remove('btn-primary', 'text-white');
+          btn.classList.add('btn-outline');
+        }
+      });
+
+      const statusType = document.getElementById('modalStatusType').value;
+      updateModalDocVisibility(statusType, activeCategory);
+    }
+
+    function toggleModalDocumentStatus() {
+      modalDocStatus = !modalDocStatus;
+      updateModalDocButton();
+    }
+
+    function updateModalDocButton() {
+      const btn = document.getElementById('docToggleBtn');
+      if (!btn) return;
+      if (modalDocStatus) {
+        btn.textContent = '서류 제출 완료';
+        btn.className = 'btn btn-sm btn-success text-white rounded-xl font-bold';
+      } else {
+        btn.textContent = '서류 미제출';
+        btn.className = 'btn btn-sm btn-error text-white rounded-xl font-bold';
+      }
+    }
+
+    function closeReasonModal() {
+      document.getElementById('reasonModal').close();
+    }
+
+    function saveReasonEntry() {
+      const studentNum = parseInt(document.getElementById('modalStudentNumber').value, 10);
+      const statusType = document.getElementById('modalStatusType').value;
+      const detailText = document.getElementById('modalReasonDetail').value.trim();
+      
+      let periodToSave = '';
+      if (statusType === '결과') {
+        periodToSave = selectedPeriods.join(', ') || '1교시';
+      } else if (statusType === '지각' || statusType === '조퇴') {
+        periodToSave = activePeriod;
+      }
+
+      const dateKey = formatDateKey(currentDate);
+      const allData = loadAttendanceData();
+      if (!allData[dateKey]) allData[dateKey] = {};
+
+      const currentRec = getStudentDayRecord(allData[dateKey], studentNum) || {
+        isPresent: false,
+        late: null,
+        miss: null,
+        early: null,
+        absent: null
+      };
+
+      // 미인정은 서류 미제출/제출완료 대상에서 완전 제외 (false)
+      const shouldSaveDocStatus = (activeCategory !== '미인정') && (
+        (statusType === '결석') || 
+        ((statusType === '지각' || statusType === '결과' || statusType === '조퇴') && activeCategory === '출석인정')
+      );
+      const docValue = shouldSaveDocStatus ? modalDocStatus : false;
+
+      if (statusType === '지각') {
+        currentRec.isPresent = false;
+        currentRec.absent = null;
+        currentRec.late = {
+          period: periodToSave,
+          category: activeCategory,
+          reason: detailText,
+          docSubmitted: docValue
+        };
+      } else if (statusType === '결과') {
+        currentRec.isPresent = false;
+        currentRec.absent = null;
+        currentRec.miss = {
+          period: periodToSave,
+          category: activeCategory,
+          reason: detailText,
+          docSubmitted: docValue
+        };
+      } else if (statusType === '조퇴') {
+        currentRec.isPresent = false;
+        currentRec.absent = null;
+        currentRec.early = {
+          period: periodToSave,
+          category: activeCategory,
+          reason: detailText,
+          docSubmitted: docValue
+        };
+      } else if (statusType === '결석') {
+        currentRec.isPresent = false;
+        currentRec.late = null;
+        currentRec.miss = null;
+        currentRec.early = null;
+        currentRec.absent = {
+          category: activeCategory,
+          reason: detailText,
+          docSubmitted: docValue
+        };
+      }
+
+      currentRec.updatedAt = new Date().toISOString();
+      allData[dateKey][studentNum] = currentRec;
+
+      saveAttendanceData(allData);
+      renderStudentsGrid();
+      closeReasonModal();
+
+      showToast(`${getStudentDisplayName(studentNum)} ${statusType} 사유가 저장되었습니다.`, 'success');
+    }
+
+    async function deleteReasonEntry() {
+      const studentNum = parseInt(document.getElementById('modalStudentNumber').value, 10);
+      const statusType = document.getElementById('modalStatusType').value;
+
+      const dateKey = formatDateKey(currentDate);
+      const allData = loadAttendanceData();
+      if (!allData[dateKey] || !allData[dateKey][studentNum]) return;
+
+      const rec = getStudentDayRecord(allData[dateKey], studentNum);
+      if (!rec) return;
+
+      if (statusType === '지각') rec.late = null;
+      else if (statusType === '결과') rec.miss = null;
+      else if (statusType === '조퇴') rec.early = null;
+      else if (statusType === '결석') rec.absent = null;
+
+      if (!rec.late && !rec.miss && !rec.early && !rec.absent && !rec.isPresent) {
+        delete allData[dateKey][studentNum];
+      } else {
+        rec.updatedAt = new Date().toISOString();
+        allData[dateKey][studentNum] = rec;
+      }
+
+      await saveAttendanceData(allData);
+      renderStudentsGrid();
+      closeReasonModal();
+
+      showToast(`${getStudentDisplayName(studentNum)} ${statusType} 기록이 삭제되었습니다.`, 'info');
+    }
+
+    let calendarViewYear = 2026;
+    let calendarViewMonth = 9;
+
+    function openAcademicCalendar() {
+      const academicYear = getAcademicYear(currentDate);
+      document.getElementById('calendarYearTitle').textContent = `${academicYear}학년도 전체 출결 달력`;
+
+      calendarViewYear = currentDate.getFullYear();
+      calendarViewMonth = currentDate.getMonth() + 1;
+
+      renderAcademicCalendarMonthTabs(academicYear);
+      renderCalendarMonthView(calendarViewYear, calendarViewMonth);
+
+      document.getElementById('academicCalendarModal').showModal();
+    }
+
+    function closeAcademicCalendar() {
+      document.getElementById('academicCalendarModal').close();
+    }
+
+    function renderAcademicCalendarMonthTabs(academicYear) {
+      const container = document.getElementById('calendarMonthTabs');
+      const monthsOrder = [
+        { y: academicYear, m: 3, label: '3월' },
+        { y: academicYear, m: 4, label: '4월' },
+        { y: academicYear, m: 5, label: '5월' },
+        { y: academicYear, m: 6, label: '6월' },
+        { y: academicYear, m: 7, label: '7월' },
+        { y: academicYear, m: 8, label: '8월' },
+        { y: academicYear, m: 9, label: '9월' },
+        { y: academicYear, m: 10, label: '10월' },
+        { y: academicYear, m: 11, label: '11월' },
+        { y: academicYear, m: 12, label: '12월' },
+        { y: academicYear + 1, m: 1, label: '익년 1월' },
+        { y: academicYear + 1, m: 2, label: '익년 2월' }
+      ];
+
+      let html = '';
+      monthsOrder.forEach(item => {
+        const isActive = (item.y === calendarViewYear && item.m === calendarViewMonth);
+        html += `
+          <button type="button" onclick="selectCalendarMonth(${item.y}, ${item.m})" class="btn btn-xs sm:btn-sm rounded-xl font-bold whitespace-nowrap ${isActive ? 'btn-primary text-white shadow-sm' : 'btn-ghost bg-base-200'}">
+            ${item.label}
+          </button>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function selectCalendarMonth(year, month) {
+      calendarViewYear = year;
+      calendarViewMonth = month;
+      const academicYear = getAcademicYear(new Date(year, month - 1, 1));
+      renderAcademicCalendarMonthTabs(academicYear);
+      renderCalendarMonthView(year, month);
+    }
+
+    function renderCalendarMonthView(year, month) {
+      const labelElem = document.getElementById('calendarActiveMonthLabel');
+      labelElem.textContent = `${year}년 ${month}월`;
+
+      const gridElem = document.getElementById('calendarDaysGrid');
+      const allData = loadAttendanceData();
+
+      const firstDayOfMonth = new Date(year, month - 1, 1).getDay();
+      const lastDateOfMonth = new Date(year, month, 0).getDate();
+
+      const selectedDateKey = formatDateKey(currentDate);
+      document.getElementById('calendarSelectedDateNotice').textContent = selectedDateKey;
+
+      let html = '';
+
+      for (let i = 0; i < firstDayOfMonth; i++) {
+        html += `<div class="p-2 opacity-0 pointer-events-none"></div>`;
+      }
+
+      for (let day = 1; day <= lastDateOfMonth; day++) {
+        const dateObj = new Date(year, month - 1, day);
+        const dayOfWeek = dateObj.getDay();
+        const dateKey = formatDateKey(dateObj);
+        const isToday = formatDateKey(new Date()) === dateKey;
+        const isCurrentView = selectedDateKey === dateKey;
+
+        const dayRecords = allData[dateKey] || {};
+        const recordedCount = Object.keys(dayRecords).length;
+        
+        let hasAbsenceOrTardy = false;
+        for (const num in dayRecords) {
+          const rec = getStudentDayRecord(dayRecords, num);
+          if (rec && (rec.late || rec.miss || rec.early || rec.absent)) {
+            hasAbsenceOrTardy = true;
+            break;
+          }
+        }
+
+        let textColorClass = 'text-neutral';
+        if (dayOfWeek === 0) textColorClass = 'text-rose-500 font-semibold';
+        else if (dayOfWeek === 6) textColorClass = 'text-blue-500 font-semibold';
+
+        html += `
+          <button type="button" onclick="selectCalendarDate('${dateKey}')" class="min-h-[58px] p-1.5 rounded-xl flex flex-col justify-between items-center text-center transition-all border ${isCurrentView ? 'border-primary bg-primary/10 shadow-sm' : 'border-base-300/40 bg-base-100 hover:bg-base-200/80'}">
+            <div class="flex items-center justify-between w-full px-1">
+              <span class="text-xs font-bold ${textColorClass} ${isToday ? 'bg-neutral text-white rounded-full w-5 h-5 flex items-center justify-center -ml-0.5' : ''}">${day}</span>
+              ${isToday ? '<span class="text-[9px] text-primary font-black">오늘</span>' : ''}
+            </div>
+
+            <div class="flex items-center gap-1 my-1">
+              ${recordedCount > 0 ? `<span class="w-1.5 h-1.5 rounded-full ${hasAbsenceOrTardy ? 'bg-rose-500' : 'bg-emerald-500'}" title="${hasAbsenceOrTardy ? '결결 기록 있음' : '출석 기록 완료'}"></span>` : '<span class="w-1.5 h-1.5 opacity-0"></span>'}
+            </div>
+
+            <span class="text-[10px] text-base-content/50">${recordedCount > 0 ? recordedCount + '명 기록' : '-'}</span>
+          </button>
+        `;
+      }
+
+      gridElem.innerHTML = html;
+    }
+
+    function selectCalendarDate(dateKey) {
+      const parts = dateKey.split('-');
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+
+      currentDate = new Date(y, m, d);
+      updateDateDisplay();
+      closeAcademicCalendar();
+      showToast(`${dateKey} 출석부로 이동했습니다.`, 'info');
+    }
+
+    let currentSummaryStudentNum = 1;
+
+    function openStudentSummary(studentNum) {
+      currentSummaryStudentNum = studentNum;
+      const allData = loadAttendanceData();
+
+      const displayName = getStudentDisplayName(studentNum);
+      document.getElementById('summaryStudentAvatar').textContent = String(studentNum).padStart(2, '0');
+      document.getElementById('summaryStudentTitle').textContent = `${displayName} 출결 요약`;
+
+      const records = [];
+      for (const [dateStr, dayData] of Object.entries(allData)) {
+        if (dayData && dayData[studentNum]) {
+          const entry = getStudentDayRecord(dayData, studentNum);
+          if (entry) {
+            if (entry.late) {
+              const isLateAck = entry.late.category === '출석인정';
+              records.push({
+                date: dateStr,
+                status: '지각',
+                period: entry.late.period,
+                category: entry.late.category,
+                reason: entry.late.reason,
+                needsDoc: isLateAck,
+                docSubmitted: isLateAck ? (entry.late.docSubmitted === true) : false
+              });
+            }
+            if (entry.miss) {
+              const isMissAck = entry.miss.category === '출석인정';
+              records.push({
+                date: dateStr,
+                status: '결과',
+                period: entry.miss.period,
+                category: entry.miss.category,
+                reason: entry.miss.reason,
+                needsDoc: isMissAck,
+                docSubmitted: isMissAck ? (entry.miss.docSubmitted === true) : false
+              });
+            }
+            if (entry.early) {
+              const isEarlyAck = entry.early.category === '출석인정';
+              records.push({
+                date: dateStr,
+                status: '조퇴',
+                period: entry.early.period,
+                category: entry.early.category,
+                reason: entry.early.reason,
+                needsDoc: isEarlyAck,
+                docSubmitted: isEarlyAck ? (entry.early.docSubmitted === true) : false
+              });
+            }
+            if (entry.absent) {
+              records.push({
+                date: dateStr,
+                status: '결석',
+                period: '',
+                category: entry.absent.category,
+                reason: entry.absent.reason,
+                needsDoc: true,
+                docSubmitted: entry.absent.docSubmitted === true
+              });
+            }
+          }
+        }
+      }
+
+      records.sort((a, b) => a.date.localeCompare(b.date));
+
+      let late = 0;
+      let miss = 0;
+      let early = 0;
+      let absent = 0;
+
+      records.forEach(r => {
+        if (r.status === '지각') late++;
+        else if (r.status === '결과') miss++;
+        else if (r.status === '조퇴') early++;
+        else if (r.status === '결석') absent++;
+      });
+
+      document.getElementById('studentLateCount').textContent = `${late}회`;
+      document.getElementById('studentMissCount').textContent = `${miss}회`;
+      document.getElementById('studentEarlyCount').textContent = `${early}회`;
+      document.getElementById('studentAbsentCount').textContent = `${absent}회`;
+      document.getElementById('summaryTotalRecords').textContent = `총 ${records.length}건`;
+
+      const listContainer = document.getElementById('studentRecordsList');
+      if (records.length === 0) {
+        listContainer.innerHTML = `
+          <div class="py-8 text-center text-base-content/50 text-xs">
+            <i data-lucide="award" class="w-8 h-8 mx-auto mb-2 text-emerald-500 opacity-70"></i>
+            지각, 결과, 조퇴, 결석 기록이 없는 성실한 학생입니다! (개근 상태)
+          </div>
+        `;
+      } else {
+        let html = '<div class="space-y-2">';
+        records.forEach(r => {
+          let badgeClass = 'badge-warning';
+          if (r.status === '결과') badgeClass = 'bg-sky-500 text-white border-none';
+          if (r.status === '조퇴') badgeClass = 'badge-secondary';
+          if (r.status === '결석') badgeClass = 'badge-error';
+
+          const docClass = r.docSubmitted ? 'btn-success text-white' : 'btn-error text-white';
+          const docText = r.docSubmitted ? '서류 제출 완료' : '서류 미제출';
+
+          html += `
+            <div class="bg-base-100 p-3 rounded-xl border border-base-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-xs text-neutral">${r.date}</span>
+                  <span class="badge ${badgeClass} badge-sm font-bold">${r.status}</span>
+                  ${r.period ? `<span class="badge badge-neutral badge-sm font-bold">${r.period}</span>` : ''}
+                  <span class="badge ${r.category === '출석인정' ? 'badge-primary' : 'badge-outline'} badge-sm font-semibold text-xs">${r.category || '사유구분 없음'}</span>
+                </div>
+                <p class="text-xs text-base-content/80 font-normal pl-0.5">${r.reason || '상세 사유 미입력'}</p>
+              </div>
+
+              ${r.needsDoc ? `
+              <div class="flex items-center gap-2 self-end sm:self-center">
+                <button ${isStudentMode ? 'disabled' : `onclick="toggleSummaryDocStatus(${studentNum}, '${r.date}', '${r.status}')"`} class="btn btn-xs ${docClass} rounded-lg font-bold shadow-xs ${isStudentMode ? 'cursor-default opacity-90' : ''}">
+                  ${docText}
+                </button>
+              </div>
+              ` : ''}
+            </div>
+          `;
+        });
+        html += '</div>';
+        listContainer.innerHTML = html;
+      }
+
+      const excelBtn = document.getElementById('studentExcelBtn');
+      if (excelBtn) {
+        if (isStudentMode) {
+          excelBtn.classList.add('hidden');
+        } else {
+          excelBtn.classList.remove('hidden');
+          excelBtn.onclick = () => exportStudentExcel(studentNum);
+        }
+      }
+
+      if (window.lucide) lucide.createIcons();
+      document.getElementById('studentSummaryModal').showModal();
+    }
+
+    function toggleSummaryDocStatus(studentNum, dateKey, statusType = '결석') {
+      const allData = loadAttendanceData();
+      if (allData[dateKey] && allData[dateKey][studentNum]) {
+        const rec = getStudentDayRecord(allData[dateKey], studentNum);
+        if (!rec) return;
+
+        let targetItem = null;
+        if (statusType === '결석' && rec.absent) targetItem = rec.absent;
+        else if (statusType === '지각' && rec.late) targetItem = rec.late;
+        else if (statusType === '결과' && rec.miss) targetItem = rec.miss;
+        else if (statusType === '조퇴' && rec.early) targetItem = rec.early;
+
+        if (targetItem) {
+          targetItem.docSubmitted = !targetItem.docSubmitted;
+          rec.updatedAt = new Date().toISOString();
+          allData[dateKey][studentNum] = rec;
+          saveAttendanceData(allData);
+          openStudentSummary(studentNum);
+          renderStudentsGrid();
+          showToast('서류 제출 상태가 변경되었습니다.', 'info');
+        }
+      }
+    }
+
+    function closeStudentSummaryModal() {
+      document.getElementById('studentSummaryModal').close();
+    }
+
+    let docViewYear = 2026;
+    let docViewMonth = 9;
+    let currentDocFilter = 'all';
+
+    function openDocManagementModal() {
+      docViewYear = currentDate.getFullYear();
+      docViewMonth = currentDate.getMonth() + 1;
+      currentDocFilter = 'all';
+
+      renderDocManagementList();
+      const modal = document.getElementById('docManagementModal');
+      if (modal) modal.showModal();
+    }
+
+    function closeDocManagementModal() {
+      const modal = document.getElementById('docManagementModal');
+      if (modal) modal.close();
+    }
+
+    function changeDocMonth(delta) {
+      docViewMonth += delta;
+      if (docViewMonth > 12) {
+        docViewMonth = 1;
+        docViewYear++;
+      } else if (docViewMonth < 1) {
+        docViewMonth = 12;
+        docViewYear--;
+      }
+      renderDocManagementList();
+    }
+
+    function setDocMonthToCurrent() {
+      const now = new Date();
+      docViewYear = now.getFullYear();
+      docViewMonth = now.getMonth() + 1;
+      renderDocManagementList();
+    }
+
+    function setDocFilter(filterType) {
+      currentDocFilter = filterType;
+
+      const btnAll = document.getElementById('docFilterAll');
+      const btnUnsub = document.getElementById('docFilterUnsubmitted');
+      const btnSub = document.getElementById('docFilterSubmitted');
+
+      [btnAll, btnUnsub, btnSub].forEach(b => {
+        b.className = 'btn btn-xs join-item btn-ghost font-bold';
+      });
+
+      if (filterType === 'all') {
+        btnAll.className = 'btn btn-xs join-item btn-primary text-white font-bold';
+      } else if (filterType === 'unsubmitted') {
+        btnUnsub.className = 'btn btn-xs join-item btn-error text-white font-bold';
+      } else if (filterType === 'submitted') {
+        btnSub.className = 'btn btn-xs join-item btn-success text-white font-bold';
+      }
+
+      renderDocManagementList();
+    }
+
+    function renderDocManagementList() {
+      const label = document.getElementById('docManagementCurrentMonthLabel');
+      if (label) {
+        label.textContent = `${docViewYear}년 ${docViewMonth}월`;
+      }
+
+      const allData = loadAttendanceData();
+      const targetMonthPrefix = `${docViewYear}-${String(docViewMonth).padStart(2, '0')}`;
+
+      const allMonthlyRecords = [];
+
+      for (const [dateKey, dayData] of Object.entries(allData)) {
+        if (!dateKey.startsWith(targetMonthPrefix)) continue;
+
+        for (let num = 1; num <= TOTAL_STUDENTS; num++) {
+          const rec = getStudentDayRecord(dayData, num);
+          if (!rec) continue;
+
+          // 결석 중 '미인정'은 서류 제출 대상에서 제외
+          if (rec.absent && rec.absent.category !== '미인정') {
+            allMonthlyRecords.push({
+              date: dateKey,
+              studentNum: num,
+              studentName: getStudentName(num),
+              statusType: '결석',
+              period: '',
+              category: rec.absent.category || '질병',
+              reason: rec.absent.reason || '상세 사유 없음',
+              docSubmitted: rec.absent.docSubmitted === true,
+              recordKey: 'absent'
+            });
+          }
+
+          if (rec.late && rec.late.category === '출석인정') {
+            allMonthlyRecords.push({
+              date: dateKey,
+              studentNum: num,
+              studentName: getStudentName(num),
+              statusType: '지각(출석인정)',
+              period: rec.late.period || '조회',
+              category: '출석인정',
+              reason: rec.late.reason || '상세 사유 없음',
+              docSubmitted: rec.late.docSubmitted === true,
+              recordKey: 'late'
+            });
+          }
+
+          if (rec.miss && rec.miss.category === '출석인정') {
+            allMonthlyRecords.push({
+              date: dateKey,
+              studentNum: num,
+              studentName: getStudentName(num),
+              statusType: '결과(출석인정)',
+              period: rec.miss.period || '1교시',
+              category: '출석인정',
+              reason: rec.miss.reason || '상세 사유 없음',
+              docSubmitted: rec.miss.docSubmitted === true,
+              recordKey: 'miss'
+            });
+          }
+
+          if (rec.early && rec.early.category === '출석인정') {
+            allMonthlyRecords.push({
+              date: dateKey,
+              studentNum: num,
+              studentName: getStudentName(num),
+              statusType: '조퇴(출석인정)',
+              period: rec.early.period || '종례',
+              category: '출석인정',
+              reason: rec.early.reason || '상세 사유 없음',
+              docSubmitted: rec.early.docSubmitted === true,
+              recordKey: 'early'
+            });
+          }
+        }
+      }
+
+      allMonthlyRecords.sort((a, b) => {
+        if (a.date !== b.date) {
+          return a.date.localeCompare(b.date);
+        }
+        return a.studentNum - b.studentNum;
+      });
+
+      const totalCount = allMonthlyRecords.length;
+      const unsubmittedCount = allMonthlyRecords.filter(r => !r.docSubmitted).length;
+      const submittedCount = allMonthlyRecords.filter(r => r.docSubmitted).length;
+
+      document.getElementById('docCountAll').textContent = totalCount;
+      document.getElementById('docCountUnsubmitted').textContent = unsubmittedCount;
+      document.getElementById('docCountSubmitted').textContent = submittedCount;
+
+      let filteredRecords = allMonthlyRecords;
+      if (currentDocFilter === 'unsubmitted') {
+        filteredRecords = allMonthlyRecords.filter(r => !r.docSubmitted);
+      } else if (currentDocFilter === 'submitted') {
+        filteredRecords = allMonthlyRecords.filter(r => r.docSubmitted);
+      }
+
+      document.getElementById('docFilteredTotalCount').textContent = filteredRecords.length;
+
+      const listContainer = document.getElementById('docManagementListContainer');
+      if (!listContainer) return;
+
+      if (filteredRecords.length === 0) {
+        let emptyMsg = `${docViewYear}년 ${docViewMonth}월에는 서류 제출 대상(결석/출석인정) 학생이 없습니다.`;
+        if (currentDocFilter === 'unsubmitted') {
+          emptyMsg = `${docViewYear}년 ${docViewMonth}월에 아직 제출되지 않은 서류가 없습니다! (모두 제출 완료)`;
+        } else if (currentDocFilter === 'submitted') {
+          emptyMsg = `${docViewYear}년 ${docViewMonth}월에 제출 완료된 서류가 없습니다.`;
+        }
+
+        listContainer.innerHTML = `
+          <div class="py-12 text-center text-base-content/50 text-xs">
+            <i data-lucide="check-circle" class="w-10 h-10 mx-auto mb-2 text-emerald-500 opacity-80"></i>
+            <p class="font-bold text-sm text-neutral mb-1">${emptyMsg}</p>
+            <p class="text-[11px]">결석 및 '출석인정'으로 등록된 지각·결과·조퇴만 서류 대상에 포함됩니다.</p>
+          </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+
+      let html = '<div class="space-y-2">';
+      filteredRecords.forEach(r => {
+        const isSubmitted = r.docSubmitted;
+        const btnClass = isSubmitted 
+          ? 'btn-success text-white' 
+          : 'btn-error text-white animate-pulse';
+        const btnText = isSubmitted ? '서류 제출 완료' : '서류 미제출';
+        const btnIcon = isSubmitted ? 'file-check' : 'file-warning';
+
+        const dateObj = new Date(r.date);
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+        const dayName = dayNames[dateObj.getDay()];
+
+        let statusBadgeClass = 'badge-error';
+        if (r.statusType.includes('지각')) statusBadgeClass = 'badge-warning';
+        if (r.statusType.includes('결과')) statusBadgeClass = 'badge-info text-white';
+        if (r.statusType.includes('조퇴')) statusBadgeClass = 'badge-secondary';
+
+        html += `
+          <div class="bg-base-100 p-3 rounded-2xl border ${!isSubmitted ? 'border-rose-300 bg-rose-50/20' : 'border-base-300'} shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all hover:border-primary/50">
+            <div class="flex items-center gap-3">
+              <div class="text-center bg-base-200 px-2.5 py-1.5 rounded-xl border border-base-300 shrink-0 min-w-[76px]">
+                <span class="block text-xs font-black text-neutral tracking-tight">${r.date.substring(5)}</span>
+                <span class="block text-[10px] font-bold text-base-content/60">(${dayName}요일)</span>
+              </div>
+
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="badge badge-neutral badge-sm font-black px-2">${String(r.studentNum).padStart(2, '0')}번</span>
+                  <span class="font-black text-sm text-neutral">${r.studentName}</span>
+                  <span class="badge ${statusBadgeClass} badge-xs font-bold">${r.statusType}</span>
+                  ${r.period ? `<span class="badge badge-neutral badge-xs font-semibold">${r.period}</span>` : ''}
+                  <span class="badge badge-outline badge-xs font-bold">${r.category}</span>
+                </div>
+                <p class="text-xs text-base-content/80 font-normal pl-0.5 flex items-center gap-1">
+                  <span class="text-base-content/40">사유:</span>
+                  <span class="truncate max-w-[240px] sm:max-w-[340px]" title="${r.reason}">${r.reason}</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+              <button onclick="toggleDocManagementStatus('${r.date}', ${r.studentNum}, '${r.recordKey}')" class="btn btn-sm ${btnClass} rounded-xl font-bold flex items-center gap-1.5 shadow-sm touch-btn" title="클릭 시 즉시 상태가 반전됩니다">
+                <i data-lucide="${btnIcon}" class="w-4 h-4"></i>
+                <span>${btnText}</span>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+
+      listContainer.innerHTML = html;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function toggleDocManagementStatus(dateKey, studentNum, recordKey = 'absent') {
+      const allData = loadAttendanceData();
+      if (!allData[dateKey] || !allData[dateKey][studentNum]) return;
+
+      const rec = getStudentDayRecord(allData[dateKey], studentNum);
+      if (!rec) return;
+
+      let targetItem = null;
+      if (recordKey === 'absent' && rec.absent) targetItem = rec.absent;
+      else if (recordKey === 'late' && rec.late) targetItem = rec.late;
+      else if (recordKey === 'miss' && rec.miss) targetItem = rec.miss;
+      else if (recordKey === 'early' && rec.early) targetItem = rec.early;
+
+      if (!targetItem) return;
+
+      targetItem.docSubmitted = !targetItem.docSubmitted;
+      rec.updatedAt = new Date().toISOString();
+      allData[dateKey][studentNum] = rec;
+
+      saveAttendanceData(allData);
+      renderDocManagementList();
+      renderStudentsGrid();
+
+      const statusMsg = targetItem.docSubmitted ? '서류 제출 완료로 변경되었습니다.' : '서류 미제출 상태로 변경되었습니다.';
+      showToast(`${dateKey} ${getStudentDisplayName(studentNum)}: ${statusMsg}`, targetItem.docSubmitted ? 'success' : 'warning');
+    }
+
+    function exportMonthlyDocExcel() {
+      const allData = loadAttendanceData();
+      const targetMonthPrefix = `${docViewYear}-${String(docViewMonth).padStart(2, '0')}`;
+
+      const records = [];
+      for (const [dateKey, dayData] of Object.entries(allData)) {
+        if (!dateKey.startsWith(targetMonthPrefix)) continue;
+
+        for (let num = 1; num <= TOTAL_STUDENTS; num++) {
+          const rec = getStudentDayRecord(dayData, num);
+          if (!rec) continue;
+
+          // 결석 중 '미인정'은 서류 엑셀 대상에서 제외
+          if (rec.absent && rec.absent.category !== '미인정') {
+            records.push({
+              date: dateKey,
+              studentNum: num,
+              studentName: getStudentName(num),
+              status: '결석',
+              period: '-',
+              category: rec.absent.category || '질병',
+              reason: rec.absent.reason || '특이사항 없음',
+              docStatus: rec.absent.docSubmitted ? '제출 완료' : '미제출'
+            });
+          }
+
+          if (rec.late && rec.late.category === '출석인정') {
+            records.push({
+              date: dateKey,
+              studentNum: num,
+              studentName: getStudentName(num),
+              status: '지각',
+              period: rec.late.period || '조회',
+              category: '출석인정',
+              reason: rec.late.reason || '특이사항 없음',
+              docStatus: rec.late.docSubmitted ? '제출 완료' : '미제출'
+            });
+          }
+
+          if (rec.miss && rec.miss.category === '출석인정') {
+            records.push({
+              date: dateKey,
+              studentNum: num,
+              studentName: getStudentName(num),
+              status: '결과',
+              period: rec.miss.period || '1교시',
+              category: '출석인정',
+              reason: rec.miss.reason || '특이사항 없음',
+              docStatus: rec.miss.docSubmitted ? '제출 완료' : '미제출'
+            });
+          }
+
+          if (rec.early && rec.early.category === '출석인정') {
+            records.push({
+              date: dateKey,
+              studentNum: num,
+              studentName: getStudentName(num),
+              status: '조퇴',
+              period: rec.early.period || '종례',
+              category: '출석인정',
+              reason: rec.early.reason || '특이사항 없음',
+              docStatus: rec.early.docSubmitted ? '제출 완료' : '미제출'
+            });
+          }
+        }
+      }
+
+      if (records.length === 0) {
+        showToast(`${docViewYear}년 ${docViewMonth}월에는 서류 제출 대상 학생이 없습니다.`, 'info');
+        return;
+      }
+
+      records.sort((a, b) => {
+        if (a.date !== b.date) return a.date.localeCompare(b.date);
+        return a.studentNum - b.studentNum;
+      });
+
+      const excelRows = [];
+      excelRows.push(['학년', '반', '일자', '번호', '이름', '출결구분', '교시', '사유구분', '상세내용', '서류제출여부']);
+
+      records.forEach(r => {
+        excelRows.push([
+          3, 5, r.date, `${r.studentNum}번`, r.studentName, r.status, r.period, r.category, r.reason, r.docStatus
+        ]);
+      });
+
+      const worksheet = XLSX.utils.aoa_to_sheet(excelRows);
+      worksheet['!cols'] = [
+        { wch: 8 }, { wch: 8 }, { wch: 14 }, { wch: 8 }, { wch: 12 },
+        { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 32 }, { wch: 16 }
+      ];
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, `${docViewMonth}월_서류제출현황`);
+
+      const fileName = `3학년5반_${docViewYear}년_${docViewMonth}월_서류제출현황.xlsx`;
+      XLSX.writeFile(workbook, fileName);
+
+      showToast(`${docViewYear}년 ${docViewMonth}월 서류 제출 현황 엑셀이 다운로드되었습니다.`, 'success');
+    }
+
+    function openInstallGuide() {
+      const modal = document.getElementById('installGuideModal');
+      if (modal) modal.showModal();
+    }
+
+    function closeInstallGuide() {
+      const modal = document.getElementById('installGuideModal');
+      if (modal) modal.close();
+    }
+
+    function exportCurrentMonthExcel() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1;
+      const monthPrefix = `${year}-${String(month).padStart(2, '0')}`;
+      const allData = loadAttendanceData();
+
+      const lastDate = new Date(year, month, 0).getDate();
+      const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+      const matrixHeaders = ['번호', '이름'];
+      for (let d = 1; d <= lastDate; d++) {
+        const dObj = new Date(year, month - 1, d);
+        const dayName = dayNames[dObj.getDay()];
+        matrixHeaders.push(`${d}일(${dayName})`);
+      }
+      matrixHeaders.push('지각(회)', '결과(회)', '조퇴(회)', '결석(회)');
+
+      const matrixRows = [matrixHeaders];
+      const detailRows = [
+        ['학년', '반', '일자', '요일', '번호', '이름', '출결상태', '교시', '사유구분', '상세내용', '서류제출여부']
+      ];
+
+      for (let num = 1; num <= TOTAL_STUDENTS; num++) {
+        const studentName = getStudentName(num);
+        const row = [`${num}번`, studentName];
+
+        let sLateCount = 0;
+        let sMissCount = 0;
+        let sEarlyCount = 0;
+        let sAbsentCount = 0;
+
+        for (let d = 1; d <= lastDate; d++) {
+          const dStr = `${monthPrefix}-${String(d).padStart(2, '0')}`;
+          const dObj = new Date(year, month - 1, d);
+          const dayName = dayNames[dObj.getDay()];
+          const isWeekend = (dObj.getDay() === 0 || dObj.getDay() === 6);
+
+          const dayData = allData[dStr] || {};
+          const rec = getStudentDayRecord(dayData, num);
+
+          if (!rec) {
+            row.push(isWeekend ? '-' : '정상');
+            continue;
+          }
+
+          if (rec.absent) {
+            sAbsentCount++;
+            row.push('결석');
+            detailRows.push([
+              3, 5, dStr, `${dayName}요일`, `${num}번`, studentName,
+              '결석', '-', rec.absent.category || '질병',
+              rec.absent.reason || '상세 사유 없음',
+              rec.absent.docSubmitted ? '제출 완료' : '미제출'
+            ]);
+          } else {
+            const hasL = !!rec.late;
+            const hasM = !!rec.miss;
+            const hasE = !!rec.early;
+
+            if (hasL) sLateCount++;
+            if (hasM) sMissCount++;
+            if (hasE) sEarlyCount++;
+
+            if (hasL || hasM || hasE) {
+              const symbols = [];
+              if (hasL) symbols.push('지');
+              if (hasM) symbols.push('결');
+              if (hasE) symbols.push('조');
+              row.push(symbols.join('/'));
+
+              if (hasL) {
+                const lateDoc = (rec.late.category === '출석인정') ? (rec.late.docSubmitted ? '제출 완료' : '미제출') : '-';
+                detailRows.push([
+                  3, 5, dStr, `${dayName}요일`, `${num}번`, studentName,
+                  '지각', rec.late.period || '조회', rec.late.category || '질병',
+                  rec.late.reason || '상세 사유 없음', lateDoc
+                ]);
+              }
+              if (hasM) {
+                const missDoc = (rec.miss.category === '출석인정') ? (rec.miss.docSubmitted ? '제출 완료' : '미제출') : '-';
+                detailRows.push([
+                  3, 5, dStr, `${dayName}요일`, `${num}번`, studentName,
+                  '결과', rec.miss.period || '1교시', rec.miss.category || '질병',
+                  rec.miss.reason || '상세 사유 없음', missDoc
+                ]);
+              }
+              if (hasE) {
+                const earlyDoc = (rec.early.category === '출석인정') ? (rec.early.docSubmitted ? '제출 완료' : '미제출') : '-';
+                detailRows.push([
+                  3, 5, dStr, `${dayName}요일`, `${num}번`, studentName,
+                  '조퇴', rec.early.period || '종례', rec.early.category || '질병',
+                  rec.early.reason || '상세 사유 없음', earlyDoc
+                ]);
+              }
+            } else {
+              row.push(isWeekend ? '-' : '정상');
+            }
+          }
+        }
+
+        row.push(sLateCount, sMissCount, sEarlyCount, sAbsentCount);
+        matrixRows.push(row);
+      }
+
+      const headerRow = detailRows[0];
+      const dataRows = detailRows.slice(1);
+      dataRows.sort((a, b) => {
+        if (a[2] !== b[2]) {
+          return a[2].localeCompare(b[2]);
+        }
+        const numA = parseInt(a[4], 10) || 0;
+        const numB = parseInt(b[4], 10) || 0;
+        return numA - numB;
+      });
+
+      const finalDetailRows = [headerRow, ...dataRows];
+
+      const workbook = XLSX.utils.book_new();
+
+      const wsMatrix = XLSX.utils.aoa_to_sheet(matrixRows);
+      const colWidths = [{ wch: 8 }, { wch: 10 }];
+      for (let d = 1; d <= lastDate; d++) {
+        colWidths.push({ wch: 9 });
+      }
+      colWidths.push({ wch: 9 }, { wch: 9 }, { wch: 9 }, { wch: 9 });
+      wsMatrix['!cols'] = colWidths;
+      XLSX.utils.book_append_sheet(workbook, wsMatrix, `${month}월_출결일람표`);
+
+      const wsDetail = XLSX.utils.aoa_to_sheet(finalDetailRows);
+      wsDetail['!cols'] = [
+        { wch: 6 }, { wch: 6 }, { wch: 13 }, { wch: 8 }, { wch: 8 },
+        { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 32 }, { wch: 14 }
+      ];
+      XLSX.utils.book_append_sheet(workbook, wsDetail, `${month}월_특이사항상세`);
+
+      const fileName = `3학년5반_${year}년_${month}월_월간출석부.xlsx`;
+      XLSX.writeFile(workbook, fileName);
+
+      showToast(`${year}년 ${month}월 월별 출석부 엑셀이 다운로드되었습니다.`, 'success');
+    }
+
+    function exportStudentExcel(studentNum) {
+      const allData = loadAttendanceData();
+      const studentName = getStudentName(studentNum);
+      const excelRows = [];
+
+      excelRows.push(['학년', '반', '번호', '이름', '날짜', '상태', '교시', '사유구분', '상세내용', '서류제출여부']);
+
+      const dates = Object.keys(allData).sort();
+      let recordCount = 0;
+
+      dates.forEach(dateStr => {
+        const dayData = allData[dateStr];
+        if (dayData && dayData[studentNum]) {
+          const rec = getStudentDayRecord(dayData, studentNum);
+          if (rec) {
+            if (rec.late) {
+              recordCount++;
+              const docVal = (rec.late.category === '출석인정') ? (rec.late.docSubmitted ? '제출 완료' : '미제출') : '-';
+              excelRows.push([
+                3, 5, `${studentNum}번`, studentName, dateStr, '지각',
+                rec.late.period || '', rec.late.category || '', rec.late.reason || '', docVal
+              ]);
+            }
+            if (rec.miss) {
+              recordCount++;
+              const docVal = (rec.miss.category === '출석인정') ? (rec.miss.docSubmitted ? '제출 완료' : '미제출') : '-';
+              excelRows.push([
+                3, 5, `${studentNum}번`, studentName, dateStr, '결과',
+                rec.miss.period || '', rec.miss.category || '', rec.miss.reason || '', docVal
+              ]);
+            }
+            if (rec.early) {
+              recordCount++;
+              const docVal = (rec.early.category === '출석인정') ? (rec.early.docSubmitted ? '제출 완료' : '미제출') : '-';
+              excelRows.push([
+                3, 5, `${studentNum}번`, studentName, dateStr, '조퇴',
+                rec.early.period || '', rec.early.category || '', rec.early.reason || '', docVal
+              ]);
+            }
+            if (rec.absent) {
+              recordCount++;
+              excelRows.push([
+                3, 5, `${studentNum}번`, studentName, dateStr, '결석',
+                '', rec.absent.category || '', rec.absent.reason || '',
+                rec.absent.docSubmitted ? '제출 완료' : '미제출'
+              ]);
+            }
+          }
+        }
+      });
+
+      if (recordCount === 0) {
+        showToast(`${studentNum}번 학생(${studentName})은 결결 내역이 없어 빈 파일이 생성됩니다.`, 'info');
+        excelRows.push([3, 5, `${studentNum}번`, studentName, '-', '결결 기록 없음', '-', '-', '개근 상태', '-']);
+      }
+
+      const worksheet = XLSX.utils.aoa_to_sheet(excelRows);
+      worksheet['!cols'] = [
+        { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 12 }, { wch: 14 },
+        { wch: 12 }, { wch: 10 }, { wch: 12 }, { wch: 30 }, { wch: 14 }
+      ];
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, `${studentNum}번_${studentName}_결결현황`);
+
+      const fileName = `3학년5반_${studentNum}번_${studentName}_결결현황.xlsx`;
+      XLSX.writeFile(workbook, fileName);
+
+      showToast(`${studentNum}번 학생(${studentName}) 결결 현황 엑셀 다운로드 완료!`, 'success');
+    }
+
+    function exportBackupJson() {
+      const allData = loadAttendanceData();
+      const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const todayStr = formatDateKey(new Date());
+      a.href = url;
+      a.download = `3학년5반_출석부_전체백업_${todayStr}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('전체 출결 데이터가 백업 파일(.json)로 저장되었습니다.', 'success');
+    }
+
+    function importBackupJson() {
+      const fileInput = document.getElementById('backupFileInput');
+      if (fileInput) fileInput.click();
+    }
+
+    function handleBackupFileUpload(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (typeof parsed === 'object' && parsed !== null) {
+            await saveAttendanceData(parsed);
+            renderStudentsGrid();
+            showToast('백업 파일에서 출결 데이터 복원 및 클라우드 저장이 완료되었습니다!', 'success');
+          } else {
+            showToast('올바르지 않은 출석부 백업 파일 형식입니다.', 'error');
+          }
+        } catch (err) {
+          console.error('Failed to parse backup JSON', err);
+          showToast('백업 파일을 읽는 중 오류가 발생했습니다.', 'error');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    async function confirmResetCurrentDay() {
+      const dateKey = formatDateKey(currentDate);
+      const allData = loadAttendanceData();
+      if (allData[dateKey]) {
+        delete allData[dateKey];
+        if (isCloudReady && db && currentUser) {
+          try {
+            const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+            const dayDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'dailyAttendance', dateKey);
+            await deleteDoc(dayDocRef);
+          } catch (e) {
+            console.error('Failed to delete day doc from cloud:', e);
+          }
+        }
+        renderStudentsGrid();
+        showToast(`${dateKey} 출결 기록이 초기화되었습니다.`, 'info');
+      } else {
+        showToast('초기화할 당일 출결 기록이 없습니다.', 'info');
+      }
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+
+      let alertClass = 'alert-info text-info-content';
+      let iconName = 'info';
+
+      if (type === 'success') {
+        alertClass = 'alert-success text-white';
+        iconName = 'check-circle-2';
+      } else if (type === 'warning') {
+        alertClass = 'alert-warning text-warning-content';
+        iconName = 'alert-triangle';
+      } else if (type === 'error') {
+        alertClass = 'alert-error text-white';
+        iconName = 'alert-circle';
+      }
+
+      toast.className = `alert ${alertClass} shadow-lg rounded-2xl flex items-center gap-2 py-2.5 px-4 text-sm font-bold border-none transition-all duration-300`;
+      toast.innerHTML = `
+        <i data-lucide="${iconName}" class="w-4 h-4"></i>
+        <span>${message}</span>
+      `;
+
+      container.appendChild(toast);
+      if (window.lucide) lucide.createIcons();
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 2600);
+    }
+
+    Object.assign(window, {
+      changeDate, goToToday, toggleDocStatus, promptReason, selectReasonCategory, selectModalPeriod, handlePeriodButtonClick,
+      toggleModalDocumentStatus, closeReasonModal, saveReasonEntry, deleteReasonEntry,
+      openAcademicCalendar, closeAcademicCalendar, selectCalendarMonth, selectCalendarDate,
+      openStudentSummary, toggleSummaryDocStatus, closeStudentSummaryModal,
+      openInstallGuide, closeInstallGuide, openDocManagementModal, closeDocManagementModal,
+      changeDocMonth, setDocMonthToCurrent, setDocFilter, toggleDocManagementStatus,
+      exportMonthlyDocExcel, exportCurrentMonthExcel, exportStudentExcel,
+      exportBackupJson, importBackupJson, handleBackupFileUpload, confirmResetCurrentDay,
+      openCloudSyncGuideModal, closeCloudSyncGuideModal, saveCustomFirebaseConfig, clearCustomFirebaseConfig,
+      toggleStudentMode, copyStudentViewLink, requestExitStudentMode, verifyTeacherPin
+    });
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('mode') === 'student') {
+        isStudentMode = true;
+      }
+
+      applyModeUI();
+      updateDateDisplay();
+      if (window.lucide) lucide.createIcons();
+      await initCloudSync();
+      updateDateDisplay();
+    });
+  </script>
+</body>
+</html>
